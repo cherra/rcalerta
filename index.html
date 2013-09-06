@@ -22,24 +22,101 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
-        <title>RC@Alerta</title>
+        <script>
+            var token = window.localStorage.getItem("token");
+            if(token){
+                window.location = "home.html";
+            }
+        </script>
     </head>
     <body>
-        <div data-role="page" id="bienvenida">
-            <div data-role="header">
+        <div data-role="page" id="bienvenida" data-title="Bienvenida">
+            <div data-role="header" data-position="fixed">
                 <h1>RC@Alerta</h1>
             </div>
             <div data-role="content">
-                <p>Hola!</p>
-                <a href="#" data-role="button">Botón</a>
+                <h2>Bienvenido</h2>
+                <p>Gracias por instalar RC@Alerta, con esta App podrás enviar reportes de emergencias a las autoridades de tu estado...</p>
+                <hr>
+                <h4>Usuarios registrados</h4>
+                <form id="formulario">
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <label for="email">E-mail:</label>
+                        <input type="email" id="email" placeholder="e-mail" />
+                    </div>
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <label for="password">Clave:</label>
+                        <input type="password" id="password" placeholder="Clave" />
+                    </div>
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <button data-role="button" data-theme="b" id="boton_submit">Entrar</button>
+                    </div>
+                </form>
+                <hr>
+                <h4>Usuarios no registrados</h4>
+                <p>Es necesario que acudas a alguno de los siguientes organismos para registrarte y obtener una clave:</p>
+                
             </div>
-            <div data-role="footer">
             
+        </div>
+        <div data-role="page" id="registro" data-title="Registro" data-add-back-btn="true">
+            <div data-role="header">
+                <!-- <a href="#" data-role="button" data-rel="back">Atrás</a> -->
+                <h1>Registro</h1>
+            </div>
+            <div data-role="content">
+                <p></p>
             </div>
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
+        <script>
+            $( document ).delegate("#registro", "pageinit", function() {
+                //alert('A page with an id of "aboutPage" was just created by jQuery Mobile!');
+            });
+            $(document).ready(function(){
+               $.mobile.page.prototype.options.backBtnText = "Regresar";
+               window.localStorage.setItem("base_url", "http://matica.mx/~cherra/alertas/index.php/");
+               $('#formulario').submit(function(event) { 
+                    event.preventDefault();
+                    
+                    var datosEmail = $("#email").val()
+                    var datosPassword = $("#password").val()
+                    
+                    $('#formulario input, #formulario button').attr('disabled','disabled'); //deshabilita el formulario
+                    //$('#ingresar i').removeClass().addClass('icon-spinner icon-spin'); //le agrega una animación al botón (loader)
+                    
+                    var archivoValidacion = window.localStorage.getItem('base_url')+"ajax/login"
+                    // recolecta los valores que inserto el usuario
+                    
+                    $.ajax({
+                        url: archivoValidacion,
+                        dataType: "jsonp",
+                        crossDomain: "true",
+                        data: { email: datosEmail, password: datosPassword }
+                      }).done(function( respuesta ) {
+                          if( respuesta.validacion == 'ok' ){
+                            window.localStorage.setItem("token", respuesta.token);
+                            window.localStorage.setItem("telefono", respuesta.telefono);
+                            window.location = "home.html";
+                          }else if( respuesta.validacion == 'error' ){
+                              alert( respuesta.mensaje );
+                              $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
+                              $('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
+                          }
+                      }).fail(function (){
+                          alert("Error al intentar conectar con el servidor.");
+                          $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
+                          //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
+                      });
+                      
+                      return false;
+                      
+                });
+            });
+        </script>
     </body>
 </html>
