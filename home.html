@@ -33,7 +33,7 @@
         </style>
     </head>
     <body>
-        <div data-role="page" id="home" data-title="Reporte" data-add-back-btn="true">
+        <div data-role="page" id="home" data-title="Reporte">
             <div data-role="header" data-position="fixed">
                 <h1>RC@Alerta</h1>
             </div>
@@ -49,7 +49,7 @@
             </div>
             <div data-role="footer" data-position="fixed">
                 <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" id="salir" data-icon="back">Salir</a></div>
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
                     <div class="ui-block-b"></div>
                     <div class="ui-block-c"></div>
                     <div class="ui-block-d"></div>
@@ -59,31 +59,45 @@
         <!-- Reportes para policía -->
         <div data-role="page" id="policia" data-title="Policía" data-add-back-btn="true">
             <div data-role="header" data-position="fixed">
-                <h1>Reporte</h1>
+                <h1>Policía</h1>
             </div>
             <div data-role="content">
-                
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
+                    
+                </ul>
             </div>
             <div data-role="footer" data-position="fixed">
                 <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" id="salir" data-icon="back">Salir</a></div>
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
                     <div class="ui-block-b"></div>
                     <div class="ui-block-c"></div>
                     <div class="ui-block-d"></div>
                 </div>
             </div>
         </div>
-        <!-- Reportes para policía -->
+        <!-- Reportes para vialidad -->
         <div data-role="page" id="vialidad" data-title="Vialidad" data-add-back-btn="true">
             <div data-role="header" data-position="fixed">
-                <h1>Reporte</h1>
+                <h1>Vialidad</h1>
             </div>
             <div data-role="content">
-                
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
+                    
+                </ul>
             </div>
             <div data-role="footer" data-position="fixed">
                 <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" id="salir" data-icon="back">Salir</a></div>
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
                     <div class="ui-block-b"></div>
                     <div class="ui-block-c"></div>
                     <div class="ui-block-d"></div>
@@ -93,14 +107,21 @@
         <!-- Reportes para policía -->
         <div data-role="page" id="bomberos" data-title="Policía" data-add-back-btn="true">
             <div data-role="header" data-position="fixed">
-                <h1>Reporte</h1>
+                <h1>Bomberos</h1>
             </div>
             <div data-role="content">
-                
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
+                    
+                </ul>
             </div>
             <div data-role="footer" data-position="fixed">
                 <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" id="salir" data-icon="back">Salir</a></div>
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
                     <div class="ui-block-b"></div>
                     <div class="ui-block-c"></div>
                     <div class="ui-block-d"></div>
@@ -110,14 +131,21 @@
         <!-- Reportes para policía -->
         <div data-role="page" id="salud" data-title="Policía" data-add-back-btn="true">
             <div data-role="header" data-position="fixed">
-                <h1>Reporte</h1>
+                <h1>Salud</h1>
             </div>
             <div data-role="content">
-                
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
+                    
+                </ul>
             </div>
             <div data-role="footer" data-position="fixed">
                 <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" id="salir" data-icon="back">Salir</a></div>
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
                     <div class="ui-block-b"></div>
                     <div class="ui-block-c"></div>
                     <div class="ui-block-d"></div>
@@ -127,15 +155,15 @@
         
         <script type="text/javascript" src="phonegap.js"></script>
         <script>
+            function salir(){
+                event.preventDefault();
+                window.localStorage.clear();
+                window.location = "index.html";
+            }
             
             $(document).ready(function(){
                $.mobile.page.prototype.options.backBtnText = "Regresar";
                
-               $('#salir').click(function(event){
-                    event.preventDefault();
-                    window.localStorage.clear();
-                    window.location = "index.html";
-               });
             });
         </script>
     </body>
