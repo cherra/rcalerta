@@ -1,0 +1,88 @@
+
+        <!-- Pantalla para enviar foto -->
+        <div data-role="page" id="foto">
+            <div data-role="header" data-position="fixed">
+                <a href="home.html" data-icon="arrow-l">Regresar</a>
+                <h1>Media</h1>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#foto" class="ui-btn-active ui-state-persist">Fotografía</a></li>
+                        <li><a href="#mensaje">Mensaje</a></li>
+                        <li><a href="#audio">Audio</a></li>
+                    </ul>
+                </div><!-- /navbar -->
+            </div>
+            <div data-role="content">
+                <a href="#" data-role="button" class="boton_alerta">Tomar fotografía</a>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
+                    <div class="ui-block-b"></div>
+                    <div class="ui-block-c"></div>
+                    <div class="ui-block-d"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pantalla para enviar mensaje -->
+        <div data-role="page" id="mensaje">
+            <div data-role="header" data-position="fixed">
+                <a href="home.html" data-icon="arrow-l">Regresar</a>
+                <h1>Media</h1>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#foto">Fotografía</a></li>
+                        <li><a href="#mensaje" class="ui-btn-active ui-state-persist">Mensaje</a></li>
+                        <li><a href="#audio">Audio</a></li>
+                    </ul>
+                </div><!-- /navbar -->
+            </div>
+            <div data-role="content">
+                <form id="formulario">
+                    
+                        <label for="texto">Mensaje:</label>
+                        <textarea name="texto" id="texto" rows="5" placeholder="Introduce tu mensaje..."></textarea>
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <button data-role="button" data-theme="b">Enviar</button>
+                    </div>
+                </form>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
+                    <div class="ui-block-b"></div>
+                    <div class="ui-block-c"></div>
+                    <div class="ui-block-d"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pantalla para enviar mensaje -->
+        <div data-role="page" id="audio">
+            <div data-role="header" data-position="fixed">
+                <a href="home.html" data-icon="arrow-l">Regresar</a>
+                <h1>Media</h1>
+                
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#foto">Fotografía</a></li>
+                        <li><a href="#mensaje">Mensaje</a></li>
+                        <li><a href="#audio" class="ui-btn-active ui-state-persist">Audio</a></li>
+                    </ul>
+                </div><!-- /navbar -->
+            </div>
+            <div data-role="content">
+                <a href="#" data-role="button" class="boton_alerta">Grabar</a>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
+                    <div class="ui-block-b"></div>
+                    <div class="ui-block-c"></div>
+                    <div class="ui-block-d"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="phonegap.js"></script>
+       

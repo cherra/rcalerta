@@ -26,6 +26,7 @@
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
+        <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
             var token = window.localStorage.getItem("token");
             if(token){
@@ -78,6 +79,7 @@
                 //alert('A page with an id of "aboutPage" was just created by jQuery Mobile!');
             });
             $(document).ready(function(){
+                FastClick.attach(document.body);
                $.mobile.page.prototype.options.backBtnText = "Regresar";
                window.localStorage.setItem("base_url", "http://matica.mx/~cherra/alertas/index.php/");
                $('#formulario').submit(function(event) { 
