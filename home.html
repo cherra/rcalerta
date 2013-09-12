@@ -28,8 +28,8 @@
         <script type="text/javascript" src="js/fastclick.min.js"></script>
         <title>RC@Alerta</title>
         <style>
-            .boton_alerta{
-                padding: 2em 0;
+            .boton_alerta .ui-btn-inner{
+                padding: 3em 0;
             }
         </style>
     </head>
@@ -39,13 +39,8 @@
                 <h1>RC@Alerta</h1>
             </div>
             <div data-role="content">
-                <div class="ui-grid-a">
-                    <div class="ui-block-a"><a href="#reporte" data-role="button" id="btnpolicia" class="boton_alerta" data-prefetch>Policía</a></div>
-                    <div class="ui-block-b"><a href="#reporte" data-role="button" id="btnvialidad" class="boton_alerta" data-prefetch>Vialidad</a></div>
-                </div>
-                <div class="ui-grid-a">
-                    <div class="ui-block-a"><a href="#reporte" data-role="button" id="btnbomberos" class="boton_alerta">Bomberos</a></div>
-                    <div class="ui-block-b"><a href="#reporte" data-role="button" id="btnsalud" class="boton_alerta">Atención médica</a></div>
+                <div id="categorias">
+                    
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
@@ -60,7 +55,12 @@
         
         <script type="text/javascript" src="phonegap.js"></script>
         <script>
-            var urlReporte = window.localStorage.getItem('base_url')+"insert_reporte"
+            
+            var urlCategorias = window.localStorage.getItem('base_url')+"get_categorias";
+            var urlIncidentes = window.localStorage.getItem('base_url')+"get_incidentes";
+            var listaCategorias = "";
+            var incidentes = {};
+            var categorias = {};
             
             function salir(){
                 event.preventDefault();
@@ -69,10 +69,68 @@
             }
             
             $('#home').on('pageinit', function(event){
+                $.ajax({
+                    url: urlCategorias,
+                    dataType: "jsonp",
+                    crossDomain: "true"
+                }).done(function( respuesta ) {
+                    var i = 3;
+                    $.each(respuesta, function(key, data){
+                        categorias[data.id] = data;
+                        if(i === 2){
+                            listaCategorias += '</div>';
+                        }
+                        if(i > 1){
+                            listaCategorias += '<div class="ui-grid-a">';
+                            i = 0;
+                        }
+                        if(i === 0){
+                            listaCategorias += '<div class="ui-block-a"><a href="#" data-role="button" id="'+data.id+'" class="boton_alerta" data-theme="'+data.theme+'">'+data.nombre+'</a></div>';
+                        }
+                        if(i === 1){
+                            listaCategorias += '<div class="ui-block-b"><a href="#" data-role="button" id="'+data.id+'" class="boton_alerta" data-theme="'+data.theme+'">'+data.nombre+'</a></div>';
+                        }
+                        i++;
+                    });
+                    console.log(JSON.stringify(categorias));
+                    window.localStorage.setItem("categorias", JSON.stringify(categorias));
+                    $('#categorias').html(listaCategorias);
+                    $('#categorias a').button();
+                }).fail(function (){
+                    alert("Error al intentar conectar con el servidor.");
+                });
+                
                 $.mobile.loadPage('reporte.html');
                 $.mobile.loadPage('foto.html');
                 $.mobile.loadPage('mensaje.html');
                 $.mobile.loadPage('audio.html');
+                
+                $('#categorias').on('click','a',function(){
+                    var id = $(this).attr('id');
+                    // Se obtienen los incidentes por categoria
+                    $.ajax({
+                        url: urlIncidentes,
+                        dataType: "jsonp",
+                        crossDomain: "true",
+                        data: { id_categoria: id }
+                    }).done(function( respuesta_i ) {
+                        if(respuesta_i){
+                            incidentes[id] = {};
+                            $('#lista-reportes').html('');
+                            $.each(respuesta_i, function(i, incidente){
+                                incidentes[id][incidente.id] = incidente;
+                                $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
+                            });
+                            $('#lista-reportes').listview('refresh');
+                            console.log(JSON.stringify(incidentes));
+                            window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
+                        }
+                    }).fail(function (){
+                        alert("Error al intentar conectar con el servidor.");
+                    });
+                        
+                    $.mobile.changePage('#reporte');
+                });
             });
             
             $(document).ready(function(){
@@ -81,10 +139,6 @@
                 $.mobile.defaultPageTransition = "none";
                 $.mobile.page.prototype.options.domCache = true;
                 $.mobile.page.prototype.options.backBtnText = "Regresar";
-                //$.mobile.buttonMarkup.hoverDelay = 30;
-                
-                
-                
                 
             });
             
