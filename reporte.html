@@ -5,12 +5,8 @@
                 <h1>Tipo de reporte</h1>
             </div>
             <div data-role="content">
-                <ul data-role="listview" data-inset="true" class="lista-reportes">
-                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
+                <!-- Lista de reportes de la categoría -->
+                <ul data-role="listview" data-inset="true" id="lista-reportes">
                     
                 </ul>
             </div>
@@ -24,21 +20,24 @@
             </div>
             <script>
                 $('#reporte').on('pageinit', function(event){
+                    var urlReporte = window.localStorage.getItem('base_url')+"insert_reporte";
                     var idPersona = window.localStorage.getItem('id_persona');
-                    
-                    $('.lista-reportes li a').click(function(){
+                    var idTipo = "";
+                    $('#lista-reportes').on('click','li a', function(){
+                        idTipo = $(this).attr('id');
+                        console.log($(this).attr('id'));
                         $.ajax({
                             url: urlReporte,
                             dataType: "jsonp",
                             crossDomain: "true",
-                            data: { id_persona: idPersona, mensaje: 'Prueba de mensaje desde App' }
+                            data: { id_persona: idPersona, id_tipo: idTipo, mensaje: 'Prueba de mensaje desde App' }
                         }).done(function( respuesta ) {
-                            if( respuesta.mensaje == 'ok' ){
+                            if( respuesta.mensaje === 'ok' ){
                                 alert("Reporte generado con id: "+respuesta.id);
                               window.localStorage.setItem("id_reporte", respuesta.id);
                               window.localStorage.setItem("telefono", respuesta.telefono);
                               $.mobile.changePage('#mensaje');
-                            }else if( respuesta.validacion == 'error' ){
+                            }else if( respuesta.validacion === 'error' ){
                                 alert( respuesta.mensaje );
                             }
                         }).fail(function (){
