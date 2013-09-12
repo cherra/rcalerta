@@ -1,0 +1,52 @@
+<!-- Reportes ciudadano -->
+        <div data-role="page" id="reporte" data-title="Reporte ciudadano" data-dom-cache="true">
+            <div data-role="header" data-position="fixed">
+                <a href="#home" data-icon="arrow-l">Regresar</a>
+                <h1>Tipo de reporte</h1>
+            </div>
+            <div data-role="content">
+                <ul data-role="listview" data-inset="true" class="lista-reportes">
+                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
+                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
+                    
+                </ul>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
+                    <div class="ui-block-b"></div>
+                    <div class="ui-block-c"></div>
+                    <div class="ui-block-d"></div>
+                </div>
+            </div>
+            <script>
+                $('#reporte').on('pageinit', function(event){
+                    var idPersona = window.localStorage.getItem('id_persona');
+                    
+                    $('.lista-reportes li a').click(function(){
+                        $.ajax({
+                            url: urlReporte,
+                            dataType: "jsonp",
+                            crossDomain: "true",
+                            data: { id_persona: idPersona, mensaje: 'Prueba de mensaje desde App' }
+                        }).done(function( respuesta ) {
+                            if( respuesta.mensaje == 'ok' ){
+                                alert("Reporte generado con id: "+respuesta.id);
+                              window.localStorage.setItem("id_reporte", respuesta.id);
+                              window.localStorage.setItem("telefono", respuesta.telefono);
+                              $.mobile.changePage('#mensaje');
+                            }else if( respuesta.validacion == 'error' ){
+                                alert( respuesta.mensaje );
+                            }
+                        }).fail(function (){
+                            alert("Error al intentar conectar con el servidor.");
+                            //$('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
+                            //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
+                        });
+                    });
+                });
+            </script>
+        </div>

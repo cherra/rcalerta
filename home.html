@@ -34,130 +34,19 @@
         </style>
     </head>
     <body>
-        <div data-role="page" id="home" data-title="Reporte">
+        <div data-role="page" id="home" data-title="Reporte" data-dom-cache="true">
             <div data-role="header" data-position="fixed">
                 <h1>RC@Alerta</h1>
             </div>
             <div data-role="content">
                 <div class="ui-grid-a">
-                    <div class="ui-block-a"><a href="#tipo-reporte" data-role="button" id="btnpolicia" class="boton_alerta">Policía</a></div>
-                    <div class="ui-block-b"><a href="#tipo-reporte" data-role="button" id="btnvialidad" class="boton_alerta">Vialidad</a></div>
+                    <div class="ui-block-a"><a href="#reporte" data-role="button" id="btnpolicia" class="boton_alerta" data-prefetch>Policía</a></div>
+                    <div class="ui-block-b"><a href="#reporte" data-role="button" id="btnvialidad" class="boton_alerta" data-prefetch>Vialidad</a></div>
                 </div>
                 <div class="ui-grid-a">
-                    <div class="ui-block-a"><a href="#tipo-reporte" data-role="button" id="btnbomberos" class="boton_alerta">Bomberos</a></div>
-                    <div class="ui-block-b"><a href="#tipo-reporte" data-role="button" id="btnsalud" class="boton_alerta">Atención médica</a></div>
+                    <div class="ui-block-a"><a href="#reporte" data-role="button" id="btnbomberos" class="boton_alerta">Bomberos</a></div>
+                    <div class="ui-block-b"><a href="#reporte" data-role="button" id="btnsalud" class="boton_alerta">Atención médica</a></div>
                 </div>
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
-                    <div class="ui-block-b"></div>
-                    <div class="ui-block-c"></div>
-                    <div class="ui-block-d"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Reportes ciudadano -->
-        <div data-role="page" id="tipo-reporte" data-title="Reporte ciudadano">
-            <div data-role="header" data-position="fixed">
-                <a href="#home" data-icon="arrow-l">Regresar</a>
-                <h1>Tipo de reporte</h1>
-            </div>
-            <div data-role="content">
-                <ul data-role="listview" data-inset="true" class="lista-reportes">
-                    <li><a href="#"><h3>Reporte 1</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 2</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 3</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 4</h3><p>Descripción corta</p></a></li>
-                    <li><a href="#"><h3>Reporte 5</h3><p>Descripción corta</p></a></li>
-                    
-                </ul>
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
-                    <div class="ui-block-b"></div>
-                    <div class="ui-block-c"></div>
-                    <div class="ui-block-d"></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pantalla para enviar foto -->
-        <div data-role="page" id="foto">
-            <div data-role="header" data-position="fixed">
-                <a href="#tipo-reporte" data-icon="arrow-l">Regresar</a>
-                <h1>Media</h1>
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#foto" class="ui-btn-active ui-state-persist">Fotografía</a></li>
-                        <li><a href="#mensaje">Mensaje</a></li>
-                        <li><a href="#audio">Audio</a></li>
-                    </ul>
-                </div><!-- /navbar -->
-            </div>
-            <div data-role="content">
-                <a href="#" data-role="button" class="boton_alerta">Tomar fotografía</a>
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
-                    <div class="ui-block-b"></div>
-                    <div class="ui-block-c"></div>
-                    <div class="ui-block-d"></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pantalla para enviar mensaje -->
-        <div data-role="page" id="mensaje">
-            <div data-role="header" data-position="fixed">
-                <a href="#tipo-reporte" data-icon="arrow-l">Regresar</a>
-                <h1>Media</h1>
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#foto">Fotografía</a></li>
-                        <li><a href="#mensaje" class="ui-btn-active ui-state-persist">Mensaje</a></li>
-                        <li><a href="#audio">Audio</a></li>
-                    </ul>
-                </div><!-- /navbar -->
-            </div>
-            <div data-role="content">
-                <form id="formulario">
-                    
-                        <label for="texto">Mensaje:</label>
-                        <textarea name="texto" id="texto" rows="5" placeholder="Introduce tu mensaje..."></textarea>
-                    <div data-role="fieldcontain" class="ui-hide-label">
-                        <button data-role="button" data-theme="b">Enviar</button>
-                    </div>
-                </form>
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
-                    <div class="ui-block-b"></div>
-                    <div class="ui-block-c"></div>
-                    <div class="ui-block-d"></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pantalla para enviar mensaje -->
-        <div data-role="page" id="audio">
-            <div data-role="header" data-position="fixed">
-                <a href="#tipo-reporte" data-icon="arrow-l">Regresar</a>
-                <h1>Media</h1>
-                
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#foto">Fotografía</a></li>
-                        <li><a href="#mensaje">Mensaje</a></li>
-                        <li><a href="#audio" class="ui-btn-active ui-state-persist">Audio</a></li>
-                    </ul>
-                </div><!-- /navbar -->
-            </div>
-            <div data-role="content">
-                <a href="#" data-role="button" class="boton_alerta">Grabar</a>
             </div>
             <div data-role="footer" data-position="fixed">
                 <div class="ui-grid-c">
@@ -171,23 +60,34 @@
         
         <script type="text/javascript" src="phonegap.js"></script>
         <script>
+            var urlReporte = window.localStorage.getItem('base_url')+"insert_reporte"
+            
             function salir(){
                 event.preventDefault();
                 window.localStorage.clear();
                 window.location = "index.html";
             }
             
+            $('#home').on('pageinit', function(event){
+                $.mobile.loadPage('reporte.html');
+                $.mobile.loadPage('foto.html');
+                $.mobile.loadPage('mensaje.html');
+                $.mobile.loadPage('audio.html');
+            });
+            
             $(document).ready(function(){
                 FastClick.attach(document.body);
                 
                 $.mobile.defaultPageTransition = "none";
+                $.mobile.page.prototype.options.domCache = true;
                 $.mobile.page.prototype.options.backBtnText = "Regresar";
                 //$.mobile.buttonMarkup.hoverDelay = 30;
-               
-                $('.lista-reportes li a').click(function(){
-                   $.mobile.changePage("#foto");
-                });
+                
+                
+                
+                
             });
+            
         </script>
     </body>
 </html>

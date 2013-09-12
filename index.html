@@ -81,7 +81,7 @@
             $(document).ready(function(){
                 FastClick.attach(document.body);
                $.mobile.page.prototype.options.backBtnText = "Regresar";
-               window.localStorage.setItem("base_url", "http://matica.mx/~cherra/alertas/index.php/");
+               window.localStorage.setItem("base_url", "http://localhost/~cherra/alerta/index.php/ws/app/");
                $('#formulario').submit(function(event) { 
                     event.preventDefault();
                     
@@ -91,7 +91,7 @@
                     $('#formulario input, #formulario button').attr('disabled','disabled'); //deshabilita el formulario
                     //$('#ingresar i').removeClass().addClass('icon-spinner icon-spin'); //le agrega una animación al botón (loader)
                     
-                    var archivoValidacion = window.localStorage.getItem('base_url')+"ajax/login"
+                    var archivoValidacion = window.localStorage.getItem('base_url')+"login"
                     // recolecta los valores que inserto el usuario
                     
                     $.ajax({
@@ -101,8 +101,9 @@
                         data: { email: datosEmail, password: datosPassword }
                       }).done(function( respuesta ) {
                           if( respuesta.validacion == 'ok' ){
-                            window.localStorage.setItem("token", respuesta.token);
+                            //window.localStorage.setItem("token", respuesta.token);
                             window.localStorage.setItem("telefono", respuesta.telefono);
+                            window.localStorage.setItem("id_persona", respuesta.id_persona);
                             window.location = "home.html";
                           }else if( respuesta.validacion == 'error' ){
                               alert( respuesta.mensaje );
