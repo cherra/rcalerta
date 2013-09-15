@@ -1,8 +1,8 @@
 <!-- Reportes ciudadano -->
         <div data-role="page" id="reporte" data-title="Reporte ciudadano" data-dom-cache="true">
-            <div data-role="header" data-position="fixed">
-                <a href="#home" data-icon="arrow-l">Regresar</a>
-                <h1>Tipo de reporte</h1>
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <a href="#home" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Regresar</a>
+                <h1>Enviar reporte</h1>
             </div>
             <div data-role="content">
                 <!-- Lista de reportes de la categoría -->
@@ -10,36 +10,36 @@
                     
                 </ul>
             </div>
-            <div data-role="footer" data-position="fixed">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
-                    <div class="ui-block-b"></div>
-                    <div class="ui-block-c"></div>
-                    <div class="ui-block-d"></div>
-                </div>
-            </div>
+            
             <script>
                 $('#reporte').on('pageinit', function(event){
                     var urlReporte = window.localStorage.getItem('base_url')+"insert_reporte";
                     var idPersona = window.localStorage.getItem('id_persona');
                     var idTipo = "";
                     $('#lista-reportes').on('click','li a', function(){
+                        $.mobile.loading( 'show', {
+                                text: 'Enviando reporte',
+                                textVisible: true,
+                                theme: 'z',
+                                html: ""
+                        });
                         idTipo = $(this).attr('id');
                         console.log($(this).attr('id'));
                         $.ajax({
                             url: urlReporte,
                             dataType: "jsonp",
                             crossDomain: "true",
-                            data: { id_persona: idPersona, id_tipo: idTipo, mensaje: 'Prueba de mensaje desde App' }
+                            data: { id_persona: idPersona, id_tipo: idTipo, mensaje: 'Reporte inicial' }
                         }).done(function( respuesta ) {
                             if( respuesta.mensaje === 'ok' ){
-                                alert("Reporte generado con id: "+respuesta.id);
-                              window.localStorage.setItem("id_reporte", respuesta.id);
+                                //alert("Reporte generado con id: "+respuesta.id);
+                              window.localStorage.setItem("id_evento", respuesta.id_evento);
                               window.localStorage.setItem("telefono", respuesta.telefono);
-                              $.mobile.changePage('#mensaje');
+                              $.mobile.changePage('#mensaje', {transition: 'slide'});
                             }else if( respuesta.validacion === 'error' ){
                                 alert( respuesta.mensaje );
                             }
+                            $.mobile.loading('hide');
                         }).fail(function (){
                             alert("Error al intentar conectar con el servidor.");
                             //$('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario

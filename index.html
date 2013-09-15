@@ -75,6 +75,9 @@
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
         <script>
+            if(window.localStorage.getItem('id_persona')){
+                window.location = "home.html";
+            }
             $( document ).delegate("#registro", "pageinit", function() {
                 //alert('A page with an id of "aboutPage" was just created by jQuery Mobile!');
             });

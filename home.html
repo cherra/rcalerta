@@ -35,8 +35,8 @@
     </head>
     <body>
         <div data-role="page" id="home" data-title="Reporte" data-dom-cache="true">
-            <div data-role="header" data-position="fixed">
-                <h1>RC@Alerta</h1>
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <h1>Inicio</h1>
             </div>
             <div data-role="content">
                 <div id="categorias">
@@ -44,12 +44,14 @@
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a"><a href="#" data-role="button" data-icon="back" onclick="salir()">Salir</a></div>
-                    <div class="ui-block-b"></div>
-                    <div class="ui-block-c"></div>
-                    <div class="ui-block-d"></div>
-                </div>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
+                        <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
+                        <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
+                        <li><a href="#ajustes" data-icon="gear" data-iconpos="top">Ajustes</a></li>
+                    </ul>
+                </div><!-- /navbar -->
             </div>
         </div>
         
@@ -69,6 +71,11 @@
             }
             
             $('#home').on('pageinit', function(event){
+                $.mobile.loadPage('reporte.html');
+                $.mobile.loadPage('foto.html');
+                $.mobile.loadPage('mensaje.html');
+                $.mobile.loadPage('audio.html');
+                
                 $.ajax({
                     url: urlCategorias,
                     dataType: "jsonp",
@@ -100,13 +107,9 @@
                     alert("Error al intentar conectar con el servidor.");
                 });
                 
-                $.mobile.loadPage('reporte.html');
-                $.mobile.loadPage('foto.html');
-                $.mobile.loadPage('mensaje.html');
-                $.mobile.loadPage('audio.html');
-                
                 $('#categorias').on('click','a',function(){
                     var id = $(this).attr('id');
+                    $('#lista-reportes').html('');
                     // Se obtienen los incidentes por categoria
                     $.ajax({
                         url: urlIncidentes,
@@ -116,29 +119,34 @@
                     }).done(function( respuesta_i ) {
                         if(respuesta_i){
                             incidentes[id] = {};
-                            $('#lista-reportes').html('');
+                            
+                            $('#lista-reportes').append('<li data-role="list-divider">Tipo de reporte</li>');
                             $.each(respuesta_i, function(i, incidente){
                                 incidentes[id][incidente.id] = incidente;
                                 $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
                             });
-                            $('#lista-reportes').listview('refresh');
+                            
                             console.log(JSON.stringify(incidentes));
                             window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
                         }
+                        $('#lista-reportes').listview('refresh');
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
                     });
                         
-                    $.mobile.changePage('#reporte');
+                    $.mobile.changePage('#reporte', {transition: 'slide'});
                 });
             });
             
             $(document).ready(function(){
+                
                 FastClick.attach(document.body);
                 
                 $.mobile.defaultPageTransition = "none";
                 $.mobile.page.prototype.options.domCache = true;
                 $.mobile.page.prototype.options.backBtnText = "Regresar";
+                $.support.cors = true;
+                $.mobile.allowCrossDomainPages = true;
                 
             });
             
