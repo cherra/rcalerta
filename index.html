@@ -87,6 +87,13 @@
                window.localStorage.setItem("base_url", "http://localhost/~cherra/alerta/index.php/ws/app/");
                $('#formulario').submit(function(event) { 
                     event.preventDefault();
+                    // Leyenda de "Cargando"
+                    $.mobile.loading( 'show', {
+                            text: 'Cargando...',
+                            textVisible: true,
+                            theme: 'z',
+                            html: ""
+                    });
                     
                     var datosEmail = $("#email").val()
                     var datosPassword = $("#password").val()
@@ -107,6 +114,7 @@
                             //window.localStorage.setItem("token", respuesta.token);
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
+                            $.mobile.loading('hide');
                             window.location = "home.html";
                           }else if( respuesta.validacion == 'error' ){
                               alert( respuesta.mensaje );

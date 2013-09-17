@@ -40,7 +40,9 @@
             </div>
             <div data-role="content">
                 <div id="categorias">
+                    <ul data-role="listview" data-inset="true" id="lista-categorias">
                     
+                    </ul>
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
@@ -49,7 +51,7 @@
                         <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
                         <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
                         <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
-                        <li><a href="#ajustes" data-icon="gear" data-iconpos="top">Ajustes</a></li>
+                        <li><a href="#" onclick="javascript: salir();" data-icon="gear" data-iconpos="top">Ajustes</a></li>
                     </ul>
                 </div><!-- /navbar -->
             </div>
@@ -65,7 +67,7 @@
             var categorias = {};
             
             function salir(){
-                event.preventDefault();
+                //event.preventDefault();
                 window.localStorage.clear();
                 window.location = "index.html";
             }
@@ -84,7 +86,9 @@
                     var i = 3;
                     $.each(respuesta, function(key, data){
                         categorias[data.id] = data;
-                        if(i === 2){
+                        //$('#categorias').append('<li data-role="list-divider">Reporte</li>');
+                        $('#lista-categorias').append('<li><a href="#" id="'+data.id+'"><img src="img/'+data.imagen+'" /><h3>'+data.nombre+'</h3><p>'+data.descripcion+'</p></a></li>');
+                        /*if(i === 2){
                             listaCategorias += '</div>';
                         }
                         if(i > 1){
@@ -97,17 +101,24 @@
                         if(i === 1){
                             listaCategorias += '<div class="ui-block-b"><a href="#" data-role="button" id="'+data.id+'" class="boton_alerta" data-theme="'+data.theme+'">'+data.nombre+'</a></div>';
                         }
-                        i++;
+                        i++;*/
                     });
+                    $('#lista-categorias').listview('refresh');
                     console.log(JSON.stringify(categorias));
                     window.localStorage.setItem("categorias", JSON.stringify(categorias));
-                    $('#categorias').html(listaCategorias);
-                    $('#categorias a').button();
+                    /*$('#categorias').html(listaCategorias);
+                    $('#categorias a').button();*/
                 }).fail(function (){
                     alert("Error al intentar conectar con el servidor.");
                 });
                 
                 $('#categorias').on('click','a',function(){
+                    $.mobile.loading( 'show', {
+                            text: 'Cargando...',
+                            textVisible: true,
+                            theme: 'z',
+                            html: ""
+                    });
                     var id = $(this).attr('id');
                     $('#lista-reportes').html('');
                     // Se obtienen los incidentes por categoria
@@ -128,13 +139,13 @@
                             
                             console.log(JSON.stringify(incidentes));
                             window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
+                            $.mobile.loading('hide');
+                            $.mobile.changePage('#reporte', {transition: 'slide'});
                         }
                         $('#lista-reportes').listview('refresh');
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
                     });
-                        
-                    $.mobile.changePage('#reporte', {transition: 'slide'});
                 });
             });
             
