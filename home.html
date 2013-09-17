@@ -46,6 +46,9 @@
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
+                <div class="ui-bar ui-bar-e">
+                    <p><small>Host: <span id="base_url"></span></small></p>
+                </div>
                 <div data-role="navbar">
                     <ul>
                         <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
@@ -150,6 +153,7 @@
             });
             
             $(document).ready(function(){
+                var url = window.localStorage.getItem("base_url");
                 
                 FastClick.attach(document.body);
                 
@@ -159,6 +163,7 @@
                 $.support.cors = true;
                 $.mobile.allowCrossDomainPages = true;
                 
+                $('#base_url').html(url);
             });
             
         </script>
