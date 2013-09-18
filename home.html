@@ -40,7 +40,7 @@
             </div>
             <div data-role="content">
                 <div id="categorias">
-                    <ul data-role="listview" data-inset="true" id="lista-categorias">
+                    <ul data-role="listview"  id="lista-categorias">
                     
                     </ul>
                 </div>
@@ -54,12 +54,36 @@
                         <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
                         <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
                         <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
-                        <li><a href="#" onclick="javascript: salir();" data-icon="gear" data-iconpos="top">Ajustes</a></li>
+                        <li><a href="#ajustes" data-icon="gear" data-iconpos="top">Ajustes</a></li>
                     </ul>
                 </div><!-- /navbar -->
             </div>
         </div>
-        
+        <div data-role="page" id="ajustes" data-title="Ajustes" data-dom-cache="true">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <h1>Ajustes</h1>
+            </div>
+            <div data-role="content">
+                <!-- Tipos de ajustes -->
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#cuenta">Datos personales</a></li>
+                    <li><a href="#ws">Servicios web</a></li>
+                </ul>
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#" onclick="javascript: salir();">Salir</a></li>
+                </ul>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" data-icon="home" data-iconpos="top">Home</a></li>
+                        <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
+                        <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
+                        <li><a href="#ajustes" class="ui-btn-active ui-state-persist" data-icon="gear" data-iconpos="top">Ajustes</a></li>
+                    </ul>
+                </div><!-- /navbar -->
+            </div>
+        </div>
         <script type="text/javascript" src="phonegap.js"></script>
         <script>
             
