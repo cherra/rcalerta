@@ -299,13 +299,12 @@
                                 incidentes[id][incidente.id] = incidente;
                                 $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
                             });
-                            
+                            $('#lista-reportes').listview('refresh');
                             console.log(JSON.stringify(incidentes));
                             window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
                             $.mobile.loading('hide');
                             $.mobile.changePage('#reporte', {transition: 'slide'});
                         }
-                        $('#lista-reportes').listview('refresh');
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
                     });
@@ -318,8 +317,10 @@
                 FastClick.attach(document.body);
                 
                 $.mobile.defaultPageTransition = "none";
+                $.mobile.transitionFallbacks.slide = "none";
+                $.mobile.transitionFallbacks.fade = "none";
                 $.mobile.page.prototype.options.domCache = true;
-                $.mobile.page.prototype.options.backBtnText = "Regresar";
+                $.mobile.page.prototype.options.backBtnText = "Atrás";
                 $.support.cors = true;
                 $.mobile.allowCrossDomainPages = true;
                 

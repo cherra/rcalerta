@@ -3,23 +3,20 @@
             <div data-role="header" data-position="fixed" data-theme="d">
                 <a href="#reporte" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Atrás</a>
                 <h1>Media</h1>
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#mensaje" class="ui-btn-active ui-state-persist">Mensaje</a></li>
-                        <li><a href="#foto">Fotografía</a></li>
-                        <li><a href="#audio">Audio</a></li>
-                    </ul>
-                </div><!-- /navbar -->
             </div>
             <div data-role="content">
                 <form id="formulario">
                     <label for="texto">Mensaje:</label>
                     <textarea name="texto" id="texto" rows="5" placeholder="Introduce una descripción breve del problema."></textarea>
                     <div data-role="fieldcontain" class="ui-hide-label">
-                        <button data-role="button" data-theme="b">Enviar</button>
+                        <button data-role="button" data-theme="b">Enviar texto</button>
                     </div>
-                    <a href="#" onclick="Photo();" data-role="button" class="boton_alerta">Foto</a>
-                    <a href="#" onclick="Audio();" data-role="button" class="boton_alerta">Audio</a>
                 </form>
+                <hr>
+                <div class="ui-grid-a" data-role="fieldcontain">
+                    <label>Complementa tu reporte con fotografías y/o audio:</label>
+                    <div class="ui-block-a"><a href="#" onclick="Photo();" data-role="button" data-icon="plus" data-iconpos="top">Foto</a></div>
+                    <div class="ui-block-b"><a href="#" onclick="Audio();" data-role="button" data-icon="plus" data-iconpos="top">Audio</a></div>
+                </div>
             </div>
         </div>
