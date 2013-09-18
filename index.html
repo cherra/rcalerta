@@ -64,13 +64,21 @@
             </div>
             
         </div>
-        <div data-role="page" id="registro" data-title="Registro" data-add-back-btn="true">
-            <div data-role="header">
-                <!-- <a href="#" data-role="button" data-rel="back">Atrás</a> -->
-                <h1>Registro</h1>
+        
+        <!-- Datos para conexión a los Web Services -->
+        <div data-role="page" id="ws" data-title="Servicios Web" data-dom-cache="true">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <a href="#bienvenida" data-icon="arrow-l" data-direction="reverse" data-transition="slideup">Atrás</a>
+                <h1>Servicios Web</h1>
             </div>
             <div data-role="content">
-                <p></p>
+                    <label for="ws_host">Host:</label>
+                    <input type="text" name="ws_host" id="ws_host" placeholder="Hostname o IP (ej. matica.mx)" />
+                    <label for="ws_ruta">Ruta:</label>
+                    <input type="text" name="ws_ruta" id="ws_ruta" placeholder="Ruta (ej. /~cherra/alerta/index.php/ws/app/)" />
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <button id="ws_button" data-role="button" data-theme="b">Guardar</button>
+                    </div>
             </div>
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
@@ -78,14 +86,21 @@
             if(window.localStorage.getItem('id_persona')){
                 window.location = "home.html";
             }
+            
             $( document ).delegate("#registro", "pageinit", function() {
                 //alert('A page with an id of "aboutPage" was just created by jQuery Mobile!');
             });
+            
             $(document).ready(function(){
                 FastClick.attach(document.body);
-               $.mobile.page.prototype.options.backBtnText = "Regresar";
-               window.localStorage.setItem("base_url", "http://localhost/~cherra/alerta/index.php/ws/app/");
-               $('#formulario').submit(function(event) { 
+                $.mobile.page.prototype.options.backBtnText = "Atrás";
+                $.support.cors = true;
+                $.mobile.allowCrossDomainPages = true;
+                window.localStorage.setItem('ws_host', "http://192.168.1.90"); 
+                window.localStorage.setItem('ws_ruta', "/~cherra/alerta/index.php/ws/app/"); 
+                //window.localStorage.setItem("base_url", "http://192.168.1.90/~cherra/alerta/index.php/ws/app/");
+               
+                $('#formulario').submit(function(event) { 
                     event.preventDefault();
                     // Leyenda de "Cargando"
                     $.mobile.loading( 'show', {
@@ -101,12 +116,12 @@
                     $('#formulario input, #formulario button').attr('disabled','disabled'); //deshabilita el formulario
                     //$('#ingresar i').removeClass().addClass('icon-spinner icon-spin'); //le agrega una animación al botón (loader)
                     
-                    var archivoValidacion = window.localStorage.getItem('base_url')+"login"
+                    var archivoValidacion = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"login"
                     // recolecta los valores que inserto el usuario
                     
                     $.ajax({
                         url: archivoValidacion,
-                        dataType: "jsonp",
+                        dataType: "json",
                         crossDomain: "true",
                         data: { email: datosEmail, password: datosPassword }
                       }).done(function( respuesta ) {
@@ -121,14 +136,36 @@
                               $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
                               $('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
                           }
-                      }).fail(function (){
-                          alert("Error al intentar conectar con el servidor.");
+                      }).fail(function ( respuesta ){
+                          $.mobile.loading('hide');
+                          alert("Error al intentar conectar con el servidor: "+archivoValidacion);
                           $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
                           //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
+                          $.mobile.changePage('#ws', {transition: 'slideup'});
+                          
                       });
                       
                       return false;
                       
+                });
+                
+                $('#ws').on( 'pageshow',function(event, ui){
+                    var host = window.localStorage.getItem("ws_host");
+                    var ruta = window.localStorage.getItem("ws_ruta");
+                    
+                    $('#ws_host').val(host);
+                    $('#ws_ruta').val(ruta);
+                });
+                
+                $('#ws_button').click(function(event){
+                    var host = $('#ws_host').val();
+                    var ruta = $('#ws_ruta').val();
+                    
+                    window.localStorage.setItem('ws_host', host);
+                    window.localStorage.setItem('ws_ruta', ruta);
+                    
+                    alert("Datos actualizados");
+                    $.mobile.changePage('#bienvenida', {transition: 'slideup', reverse: true});
                 });
             });
         </script>
