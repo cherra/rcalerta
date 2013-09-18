@@ -1,7 +1,7 @@
 <!-- Reportes ciudadano -->
         <div data-role="page" id="reporte" data-title="Reporte ciudadano" data-dom-cache="true">
             <div data-role="header" data-position="fixed" data-theme="d">
-                <a href="#home" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Regresar</a>
+                <a href="#home" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Atrás</a>
                 <h1>Enviar reporte</h1>
             </div>
             <div data-role="content">
@@ -35,7 +35,7 @@
                                 //alert("Reporte generado con id: "+respuesta.id);
                               window.localStorage.setItem("id_evento", respuesta.id_evento);
                               window.localStorage.setItem("telefono", respuesta.telefono);
-                              $.mobile.changePage('#mensaje', {transition: 'slide'});
+                              $.mobile.changePage('#media', {transition: 'slide'});
                             }else if( respuesta.validacion === 'error' ){
                                 alert( respuesta.mensaje );
                             }

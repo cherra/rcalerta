@@ -1,7 +1,7 @@
 <!-- Pantalla para enviar mensaje -->
-        <div data-role="page" id="mensaje" data-dom-cache="true">
+        <div data-role="page" id="media" data-dom-cache="true">
             <div data-role="header" data-position="fixed" data-theme="d">
-                <a href="#reporte" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Regresar</a>
+                <a href="#reporte" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Atrás</a>
                 <h1>Media</h1>
                 <div data-role="navbar">
                     <ul>
@@ -13,12 +13,13 @@
             </div>
             <div data-role="content">
                 <form id="formulario">
-                    
-                        <label for="texto">Mensaje:</label>
-                        <textarea name="texto" id="texto" rows="5" placeholder="Introduce una descripción breve del problema."></textarea>
+                    <label for="texto">Mensaje:</label>
+                    <textarea name="texto" id="texto" rows="5" placeholder="Introduce una descripción breve del problema."></textarea>
                     <div data-role="fieldcontain" class="ui-hide-label">
                         <button data-role="button" data-theme="b">Enviar</button>
                     </div>
+                    <a href="#" onclick="Photo();" data-role="button" class="boton_alerta">Foto</a>
+                    <a href="#" onclick="Audio();" data-role="button" class="boton_alerta">Audio</a>
                 </form>
             </div>
         </div>

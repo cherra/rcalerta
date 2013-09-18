@@ -46,9 +46,6 @@
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
-                <div class="ui-bar ui-bar-e">
-                    <p><small>Host: <span id="base_url"></span></small></p>
-                </div>
                 <div data-role="navbar">
                     <ul>
                         <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
@@ -74,6 +71,9 @@
                 </ul>
             </div>
             <div data-role="footer" data-position="fixed">
+                <div class="ui-bar ui-bar-e">
+                    <p><small>Host: <span id="base_url"></span></small></p>
+                </div>
                 <div data-role="navbar">
                     <ul>
                         <li><a href="#home" data-icon="home" data-iconpos="top">Home</a></li>
@@ -87,23 +87,159 @@
         <script type="text/javascript" src="phonegap.js"></script>
         <script>
             
+            var latitud = "19.22996329611096";
+            var longitud = "-103.7174758874846";
+            var destinationType; // sets the format of returned value 
+            var pictureSource;
+            var watchID = null;
+            
+            document.addEventListener("deviceready", onDeviceReady, false);
+            
             var urlCategorias = window.localStorage.getItem('base_url')+"get_categorias";
             var urlIncidentes = window.localStorage.getItem('base_url')+"get_incidentes";
             var listaCategorias = "";
             var incidentes = {};
             var categorias = {};
             
-            function salir(){
-                //event.preventDefault();
+            function checkConnection() {
+                var networkState = navigator.network.connection.type;
+                if(networkState === Connection.NONE)
+                    navigator.notification.alert("Es necesario tener conexión a internet para enviar alertas.")
+            }
+            
+            function Photo() {
+                navigator.camera.getPicture(onPhotoSuccess, onPhotoError, { EncodingType: 0, quality: 30, targetWidth: 640, targetHeight: 480,
+                        destinationType: destinationType.DATA_URL });
+            }
+            
+            function onPhotoSuccess(imageData) {
+                
+                // Uncomment to view the base64 encoded image data
+                console.log(imageData);
+                var archivoFoto = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
+                // recolecta los valores que inserto el usuario
+
+                /*$.ajax({
+                    type: "POST",
+                    url: archivoFoto,
+                    dataType: "json",
+                    data: { id: idAlerta, imagen: "data:image/jpeg;base64," + imageData }
+                  }).done(function( respuesta ) {
+                      if( respuesta.validacion === 'error' ){
+                          navigator.notification.alert( respuesta.mensaje, null, 'Error' );
+                      }else{
+                          window.location = "home.html";
+                      }
+                  }).fail(function (){
+                      navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
+                  });*/
+            }
+            
+            function onPhotoError(message) {
+              //if( message !== "Camera cancelled." || message !== "Selection cancelled." ){
+              //    alert('Error: ' + message);
+              //}
+              console.log(message);
+            }
+            
+            // onSuccess Geolocation
+            //
+            function onGPSSuccess(position) {
+                window.localStorage.setItem("latitud", position.coords.latitude);
+                window.localStorage.setItem("longitud", position.coords.longitude);
+                latitud = position.coords.latitude;
+                longitud = position.coords.longitude;
+                
+                /*$('#ubicacion i').removeClass('icon-refresh icon-spin icon-exclamation-sign').addClass('icon-map-marker');
+                $('#ubicacion').attr('data-content','Latitud\n: '+latitud+'\nLongitud:\n '+longitud);
+                $('#ubicacion').popover();*/
+
+            }
+
+            // onError Callback receives a PositionError object
+            //
+            function onGPSError(error) {
+                console.log("Alerta: No se pudo obtener tu ubicación. "+error)
+                /*$('#ubicacion i').removeClass('icon-refresh icon-spin icon-map-marker').addClass('icon-exclamation-sign');
+                $('#ubicacion').attr('data-content','No se pudo obtener tu ubicación.\nRevisa que tengas habilitado el GPS de tu teléfono.');
+                $('#ubicacion').popover();*/
+
+                //alert('code: '    + error.code    + '\n' +
+                //      'message: ' + error.message + '\n');
+            }
+            
+            function Audio(){
+                navigator.device.capture.captureAudio(onAudioSuccess, onAudioError, {limit:1});
+            }
+            
+            function onAudioSuccess(audioData) {
+                
+                // Uncomment to view the base64 encoded image data
+                console.log(audioData);
+                //var archivoAudio = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
+                // recolecta los valores que inserto el usuario
+
+                /*$.ajax({
+                    type: "POST",
+                    url: archivoFoto,
+                    dataType: "json",
+                    data: { id: idAlerta, imagen: "data:image/jpeg;base64," + imageData }
+                  }).done(function( respuesta ) {
+                      if( respuesta.validacion === 'error' ){
+                          navigator.notification.alert( respuesta.mensaje, null, 'Error' );
+                      }else{
+                          window.location = "home.html";
+                      }
+                  }).fail(function (){
+                      navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
+                  });*/
+            }
+            
+            function onAudioError(message) {
+              //if( message !== "Camera cancelled." || message !== "Selection cancelled." ){
+              //    alert('Error: ' + message);
+              //}
+              console.log(message);
+            }
+            
+            function logout(){
                 window.localStorage.clear();
                 window.location = "index.html";
             }
             
+            function salir(){
+                //event.preventDefault();
+                if(navigator.notification !== undefined){
+                    navigator.notification.confirm(
+                            '¿Salir?',     // mensaje (message)
+                            logout,      // función 'callback' a llamar con el índice del botón pulsado (confirmCallback)
+                            'Confirmación',            // titulo (title)
+                            'No,Si'       // botones (buttonLabels)
+                    );
+                }else{
+                    if(confirm('Salir?')){
+                        logout();
+                    }
+                }
+            }
+            
+            function onDeviceReady() {
+                
+                checkConnection();
+                
+                pictureSource=navigator.camera.PictureSourceType;
+                destinationType=navigator.camera.DestinationType;
+                
+                // Throw an error if no update is received every 30 seconds
+                var options = { enableHighAccuracy : true, maximumAge: 3000, timeout: 5000 };
+                watchID = navigator.geolocation.watchPosition(onGPSSuccess, onGPSError, options);
+            }
+            
             $('#home').on('pageinit', function(event){
                 $.mobile.loadPage('reporte.html');
-                $.mobile.loadPage('foto.html');
-                $.mobile.loadPage('mensaje.html');
-                $.mobile.loadPage('audio.html');
+                //$.mobile.loadPage('foto.html');
+                $.mobile.loadPage('media.html');
+                //$.mobile.loadPage('audio.html');
                 
                 $.ajax({
                     url: urlCategorias,
