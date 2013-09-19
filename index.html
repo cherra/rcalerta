@@ -24,13 +24,8 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
-        <script>
-            if(window.localStorage.getItem('id_persona')){
-                window.location = "home.html";
-            }
-        </script>
     </head>
-    <body>
+    <body style="display: none;">
         <div data-role="page" id="bienvenida" data-title="Bienvenida">
             <div data-role="header" data-position="fixed">
                 <h1>RC@Alerta</h1>
@@ -82,6 +77,34 @@
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
         <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
+            
+            document.addEventListener("deviceready", onDeviceReady, false);
+            
+            function onDeviceReady(){
+                var id_persona = window.localStorage.getItem("id_persona");
+                if(id_persona){
+                    window.location = "home.html";
+                }else{
+                    $('body').css('display','block');
+                }
+                checkConnection();
+            }
+            
+            function checkConnection() {
+                var networkState = navigator.network.connection.type;
+                if(networkState == Connection.NONE)
+                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.")
+                /*var states = {};
+                states[Connection.UNKNOWN]  = 'Conexión desconocida';
+                states[Connection.ETHERNET] = 'Conexión ethernet';
+                states[Connection.WIFI]     = 'Conexión WiFi';
+                states[Connection.CELL_2G]  = 'Conexión movil 2G';
+                states[Connection.CELL_3G]  = 'Conexión movil 3G';
+                states[Connection.CELL_4G]  = 'Conexión movil 4G';
+                states[Connection.NONE]     = 'Sin conexión';
+
+                alert('Tipo de conexión: ' + states[networkState]);*/
+            }
             
             $(document).ready(function(){
                 FastClick.attach(document.body);
