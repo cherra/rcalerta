@@ -24,12 +24,8 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/jquery.mobile.js"></script>
-        <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
-            var token = window.localStorage.getItem("token");
-            if(token){
+            if(window.localStorage.getItem('id_persona')){
                 window.location = "home.html";
             }
         </script>
@@ -82,21 +78,17 @@
             </div>
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile.js"></script>
+        <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
-            if(window.localStorage.getItem('id_persona')){
-                window.location = "home.html";
-            }
-            
-            $( document ).delegate("#registro", "pageinit", function() {
-                //alert('A page with an id of "aboutPage" was just created by jQuery Mobile!');
-            });
             
             $(document).ready(function(){
                 FastClick.attach(document.body);
                 $.mobile.page.prototype.options.backBtnText = "Atrás";
                 $.support.cors = true;
                 $.mobile.allowCrossDomainPages = true;
-                window.localStorage.setItem('ws_host', "http://192.168.1.90"); 
+                window.localStorage.setItem('ws_host', "http://localhost"); 
                 window.localStorage.setItem('ws_ruta', "/~cherra/alerta/index.php/ws/app/"); 
                 //window.localStorage.setItem("base_url", "http://192.168.1.90/~cherra/alerta/index.php/ws/app/");
                
