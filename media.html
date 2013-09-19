@@ -5,13 +5,11 @@
                 <h1>Media</h1>
             </div>
             <div data-role="content">
-                <form id="formulario">
                     <label for="texto">Mensaje:</label>
                     <textarea name="texto" id="texto" rows="5" placeholder="Introduce una descripción breve del problema."></textarea>
                     <div data-role="fieldcontain" class="ui-hide-label">
-                        <button data-role="button" data-theme="b">Enviar texto</button>
+                        <button data-role="button" data-theme="b" id="btn_enviar_texto">Enviar texto</button>
                     </div>
-                </form>
                 <hr>
                 <div class="ui-grid-a" data-role="fieldcontain">
                     <label>Complementa tu reporte con fotografías y/o audio:</label>
@@ -19,4 +17,52 @@
                     <div class="ui-block-b"><a href="#" onclick="Audio();" data-role="button" data-icon="plus" data-iconpos="top">Audio</a></div>
                 </div>
             </div>
+            <script>
+                $('#media').on('pageinit', function(event){
+                    $('#btn_enviar_texto').click(function(){
+                        var urlMedia = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"add_reporte";
+                        var idEvento = window.localStorage.getItem('id_evento');
+                        var idPersona = window.localStorage.getItem('id_persona');
+                        var texto = $('#texto').val();
+                        
+                        $.mobile.loading( 'show', {
+                                text: 'Enviando descripción.',
+                                textVisible: true,
+                                theme: 'z',
+                                html: ""
+                        });
+                        
+                        console.log('Texto:'+ texto);
+                        console.log('Evento:'+ idEvento);
+                        console.log('Latitud:'+ latitud);
+                        console.log('Longitud:'+ longitud);
+                        console.log('Ruta: '+urlMedia);
+                        $.ajax({
+                            url: urlMedia,
+                            dataType: "json",
+                            crossDomain: "true",
+                            data: { id_persona: idPersona, 
+                                id_evento: idEvento, 
+                                mensaje: texto, 
+                                latitud: latitud,
+                                longitud: longitud}
+                        }).done(function( respuesta ) {
+                            $.mobile.loading('hide');
+                            if( respuesta.mensaje === 'ok' ){
+                                alert("Mensaje enviado correctamente");
+                                //window.localStorage.setItem("id_evento", respuesta.id_evento);
+                                //window.localStorage.setItem("telefono", respuesta.telefono);
+                                //$.mobile.changePage('#media', {transition: 'slide'});
+                            }else if( respuesta.validacion === 'error' ){
+                                alert( respuesta.mensaje );
+                            }
+                        }).fail(function (){
+                            alert("Error al intentar conectar con el servidor.");
+                            //$('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
+                            //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
+                        });
+                        $('#texto').val('');
+                    });
+                });
+            </script>
         </div>
