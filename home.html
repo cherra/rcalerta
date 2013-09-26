@@ -113,7 +113,16 @@
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
         <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
-            
+            FastClick.attach(document.body);
+                
+            $.mobile.defaultPageTransition = "none";
+            $.mobile.transitionFallbacks.slide = "none";
+            $.mobile.transitionFallbacks.fade = "none";
+            $.mobile.page.prototype.options.domCache = true;
+            $.mobile.page.prototype.options.backBtnText = "Atrás";
+            $.support.cors = true;
+            $.mobile.allowCrossDomainPages = true;
+                
             var latitud = "19.22996329611096";
             var longitud = "-103.7174758874846";
             var destinationType; // sets the format of returned value 
@@ -124,6 +133,9 @@
             
             var urlCategorias = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"get_categorias";
             var urlIncidentes = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"get_incidentes";
+            var urlMedia = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"add_media";
+            var idEvento = window.localStorage.getItem('id_evento');
+            var idPersona = window.localStorage.getItem('id_persona');
             var listaCategorias = "";
             var incidentes = {};
             var categorias = {};
@@ -143,23 +155,27 @@
                 
                 // Uncomment to view the base64 encoded image data
                 console.log(imageData);
-                var archivoFoto = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
                 // recolecta los valores que inserto el usuario
 
-                /*$.ajax({
-                    type: "POST",
-                    url: archivoFoto,
+                $.ajax({
+                    url: urlMedia,
                     dataType: "json",
-                    data: { id: idAlerta, imagen: "data:image/jpeg;base64," + imageData }
+                    data: { id_persona: idPersona, 
+                            id_evento: idEvento, 
+                            latitud: latitud,
+                            longitud: longitud, 
+                            tipo: "image/jpeg",
+                            data: imageData }
                   }).done(function( respuesta ) {
-                      if( respuesta.validacion === 'error' ){
-                          navigator.notification.alert( respuesta.mensaje, null, 'Error' );
-                      }else{
-                          window.location = "home.html";
-                      }
-                  }).fail(function (){
+                        if( respuesta.mensaje === 'ok' ){
+                            navigator.notification.alert("Imagen enviada correctamente");
+                        }else{
+                            navigator.notification.alert( respuesta.mensaje );
+                        }
+                  }).fail(function ( error, mensaje ){
+                      console.log("Error: "+mensaje);
                       navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
-                  });*/
+                  });
             }
             
             function onPhotoError(message) {
@@ -203,11 +219,10 @@
                 
                 // Uncomment to view the base64 encoded image data
                 console.log(audioData);
-                //var archivoAudio = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
+                var urlAudio = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
                 // recolecta los valores que inserto el usuario
 
-                /*$.ajax({
-                    type: "POST",
+                $.ajax({
                     url: archivoFoto,
                     dataType: "json",
                     data: { id: idAlerta, imagen: "data:image/jpeg;base64," + imageData }
@@ -219,7 +234,7 @@
                       }
                   }).fail(function (){
                       navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
-                  });*/
+                  });
             }
             
             function onAudioError(message) {
@@ -321,7 +336,7 @@
                         if(respuesta_i){
                             incidentes[id] = {};
                             
-                            $('#lista-reportes').append('<li data-role="list-divider">Tipo de reporte</li>');
+                            //$('#lista-reportes').append('<li data-role="list-divider">Tipo de reporte</li>');
                             $.each(respuesta_i, function(i, incidente){
                                 incidentes[id][incidente.id] = incidente;
                                 $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
@@ -330,7 +345,7 @@
                             console.log(JSON.stringify(incidentes));
                             window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
                             $.mobile.loading('hide');
-                            $.mobile.changePage('#reporte', {transition: 'slide'});
+                            $.mobile.changePage('#reporte', {transition: 'none'});
                         }
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
@@ -339,17 +354,6 @@
             });
             
             $(document).ready(function(){
-                
-                FastClick.attach(document.body);
-                
-                $.mobile.defaultPageTransition = "none";
-                $.mobile.transitionFallbacks.slide = "none";
-                $.mobile.transitionFallbacks.fade = "none";
-                $.mobile.page.prototype.options.domCache = true;
-                $.mobile.page.prototype.options.backBtnText = "Atrás";
-                $.support.cors = true;
-                $.mobile.allowCrossDomainPages = true;
-                
                 
                 $('#ajustes').on( 'pageshow',function(event, ui){
                     var url = window.localStorage.getItem("ws_host")+window.localStorage.getItem("ws_ruta");
