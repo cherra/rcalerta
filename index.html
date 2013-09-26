@@ -20,18 +20,19 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <!-- <meta name="format-detection" content="telephone=no" /> -->
+        <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" /> -->
+        <meta name="viewport" content="user-scalable=no, maximum-scale=1.5, minimum-scale=0.75, width=device-width" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
     </head>
-    <body style="display: none;">
+    <body>
         <div data-role="page" id="bienvenida" data-title="Bienvenida">
             <div data-role="header" data-position="fixed">
                 <h1>RC@Alerta</h1>
             </div>
             <div data-role="content">
-                <h2>Bienvenido</h2>
+                <h2>Bienvenido(a)</h2>
                 <p>Gracias por instalar RC@Alerta, con esta App podrás enviar reportes de emergencias a las autoridades de tu estado...</p>
                 <hr>
                 <h4>Usuarios registrados</h4>
@@ -53,7 +54,6 @@
                 <p>Es necesario que acudas a alguno de los siguientes organismos para registrarte y obtener una clave:</p>
                 
             </div>
-            
         </div>
         
         <!-- Datos para conexión a los Web Services -->
@@ -77,10 +77,17 @@
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
         <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
-            
+            FastClick.attach(document.body);
+            $.mobile.page.prototype.options.backBtnText = "Atrás";
+            $.support.cors = true;
+            $.mobile.allowCrossDomainPages = true;
+            window.localStorage.setItem('ws_host', "http://rc.softpak.com.mx"); 
+            window.localStorage.setItem('ws_ruta', "/alerta/index.php/ws/app/"); 
+                
             document.addEventListener("deviceready", onDeviceReady, false);
             
             function onDeviceReady(){
+                console.log("Dispositivo preparado!");
                 var id_persona = window.localStorage.getItem("id_persona");
                 if(id_persona){
                     window.location = "home.html";
@@ -92,29 +99,22 @@
             
             function checkConnection() {
                 var networkState = navigator.network.connection.type;
-                if(networkState == Connection.NONE)
-                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.")
-                /*var states = {};
+                //console.log("Dispositivo preparado!");
+                var states = {};
                 states[Connection.UNKNOWN]  = 'Conexión desconocida';
                 states[Connection.ETHERNET] = 'Conexión ethernet';
                 states[Connection.WIFI]     = 'Conexión WiFi';
                 states[Connection.CELL_2G]  = 'Conexión movil 2G';
                 states[Connection.CELL_3G]  = 'Conexión movil 3G';
                 states[Connection.CELL_4G]  = 'Conexión movil 4G';
-                states[Connection.NONE]     = 'Sin conexión';
-
-                alert('Tipo de conexión: ' + states[networkState]);*/
+                states[Connection.NONE]     = 'Sin conexión'
+                console.log('Tipo de conexión: ' + states[networkState]);
+                if(networkState === Connection.NONE)
+                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.")
             }
             
             $(document).ready(function(){
-                FastClick.attach(document.body);
-                $.mobile.page.prototype.options.backBtnText = "Atrás";
-                $.support.cors = true;
-                $.mobile.allowCrossDomainPages = true;
-                window.localStorage.setItem('ws_host', "http://localhost"); 
-                window.localStorage.setItem('ws_ruta', "/~cherra/alerta/index.php/ws/app/"); 
-                //window.localStorage.setItem("base_url", "http://192.168.1.90/~cherra/alerta/index.php/ws/app/");
-               
+                
                 $('#formulario').submit(function(event) { 
                     event.preventDefault();
                     // Leyenda de "Cargando"
