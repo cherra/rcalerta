@@ -10,19 +10,17 @@
                     <div data-role="fieldcontain" class="ui-hide-label">
                         <button data-role="button" data-theme="b" id="btn_enviar_texto">Enviar texto</button>
                     </div>
-                <hr>
-                <div class="ui-grid-a" data-role="fieldcontain">
-                    <label>Complementa tu reporte con fotografías y/o audio:</label>
+                <p>Complementa tu reporte con fotografías y/o audio:</p>
+                <div class="ui-grid-a">
                     <div class="ui-block-a"><a href="#" onclick="Photo();" data-role="button" data-icon="plus" data-iconpos="top">Foto</a></div>
                     <div class="ui-block-b"><a href="#" onclick="Audio();" data-role="button" data-icon="plus" data-iconpos="top">Audio</a></div>
                 </div>
             </div>
             <script>
+                var urlReporte = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"add_reporte";
+                
                 $('#media').on('pageinit', function(event){
                     $('#btn_enviar_texto').click(function(){
-                        var urlMedia = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"add_reporte";
-                        var idEvento = window.localStorage.getItem('id_evento');
-                        var idPersona = window.localStorage.getItem('id_persona');
                         var texto = $('#texto').val();
                         
                         $.mobile.loading( 'show', {
@@ -38,7 +36,7 @@
                         console.log('Longitud:'+ longitud);
                         console.log('Ruta: '+urlMedia);
                         $.ajax({
-                            url: urlMedia,
+                            url: urlReporte,
                             dataType: "json",
                             crossDomain: "true",
                             data: { id_persona: idPersona, 
