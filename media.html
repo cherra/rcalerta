@@ -48,16 +48,11 @@
                             $.mobile.loading('hide');
                             if( respuesta.mensaje === 'ok' ){
                                 alert("Mensaje enviado correctamente");
-                                //window.localStorage.setItem("id_evento", respuesta.id_evento);
-                                //window.localStorage.setItem("telefono", respuesta.telefono);
-                                //$.mobile.changePage('#media', {transition: 'slide'});
                             }else if( respuesta.validacion === 'error' ){
                                 alert( respuesta.mensaje );
                             }
                         }).fail(function (){
                             alert("Error al intentar conectar con el servidor.");
-                            //$('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
-                            //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
                         });
                         $('#texto').val('');
                     });
