@@ -32,7 +32,6 @@
                             data: { id_persona: idPersona, id_tipo: idTipo, mensaje: 'Reporte inicial' }
                         }).done(function( respuesta ) {
                             if( respuesta.mensaje === 'ok' ){
-                                //alert("Reporte generado con id: "+respuesta.id);
                                 window.localStorage.setItem("id_evento", respuesta.id_evento);
                                 window.localStorage.setItem("telefono", respuesta.telefono);
                                 $.mobile.loading('hide');
@@ -43,8 +42,6 @@
                             }
                         }).fail(function (){
                             alert("Error al intentar conectar con el servidor.");
-                            //$('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
-                            //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
                         });
                     });
                 });
