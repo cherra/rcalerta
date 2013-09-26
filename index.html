@@ -91,15 +91,12 @@
                 var id_persona = window.localStorage.getItem("id_persona");
                 if(id_persona){
                     window.location = "home.html";
-                }else{
-                    $('body').css('display','block');
                 }
                 checkConnection();
             }
             
             function checkConnection() {
                 var networkState = navigator.network.connection.type;
-                //console.log("Dispositivo preparado!");
                 var states = {};
                 states[Connection.UNKNOWN]  = 'Conexión desconocida';
                 states[Connection.ETHERNET] = 'Conexión ethernet';
@@ -117,9 +114,10 @@
                 
                 $('#formulario').submit(function(event) { 
                     event.preventDefault();
-                    // Leyenda de "Cargando"
+                    
+                    // Loader
                     $.mobile.loading( 'show', {
-                            text: 'Cargando...',
+                            text: 'Autenticando...',
                             textVisible: true,
                             theme: 'z',
                             html: ""
@@ -129,7 +127,6 @@
                     var datosPassword = $("#password").val()
                     
                     $('#formulario input, #formulario button').attr('disabled','disabled'); //deshabilita el formulario
-                    //$('#ingresar i').removeClass().addClass('icon-spinner icon-spin'); //le agrega una animación al botón (loader)
                     
                     var archivoValidacion = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"login"
                     // recolecta los valores que inserto el usuario
@@ -140,13 +137,12 @@
                         crossDomain: "true",
                         data: { email: datosEmail, password: datosPassword }
                       }).done(function( respuesta ) {
-                          if( respuesta.validacion == 'ok' ){
-                            //window.localStorage.setItem("token", respuesta.token);
+                          if( respuesta.validacion === 'ok' ){
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
                             $.mobile.loading('hide');
                             window.location = "home.html";
-                          }else if( respuesta.validacion == 'error' ){
+                          }else if( respuesta.validacion === 'error' ){
                               alert( respuesta.mensaje );
                               $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
                               $('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
@@ -155,7 +151,6 @@
                           $.mobile.loading('hide');
                           alert("Error al intentar conectar con el servidor: "+archivoValidacion);
                           $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
-                          //$('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
                           $.mobile.changePage('#ws', {transition: 'slideup'});
                           
                       });
