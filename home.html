@@ -179,36 +179,23 @@
             }
             
             function onPhotoError(message) {
-              //if( message !== "Camera cancelled." || message !== "Selection cancelled." ){
-              //    alert('Error: ' + message);
-              //}
               console.log(message);
             }
             
-            // onSuccess Geolocation
+            // onGPSSuccess Geolocation
             //
             function onGPSSuccess(position) {
                 window.localStorage.setItem("latitud", position.coords.latitude);
                 window.localStorage.setItem("longitud", position.coords.longitude);
                 latitud = position.coords.latitude;
                 longitud = position.coords.longitude;
-                
-                /*$('#ubicacion i').removeClass('icon-refresh icon-spin icon-exclamation-sign').addClass('icon-map-marker');
-                $('#ubicacion').attr('data-content','Latitud\n: '+latitud+'\nLongitud:\n '+longitud);
-                $('#ubicacion').popover();*/
-
             }
 
-            // onError Callback receives a PositionError object
+            // onGPSError Callback receives a PositionError object
             //
             function onGPSError(error) {
-                console.log("Alerta: No se pudo obtener tu ubicación. "+error)
-                /*$('#ubicacion i').removeClass('icon-refresh icon-spin icon-map-marker').addClass('icon-exclamation-sign');
-                $('#ubicacion').attr('data-content','No se pudo obtener tu ubicación.\nRevisa que tengas habilitado el GPS de tu teléfono.');
-                $('#ubicacion').popover();*/
-
-                //alert('code: '    + error.code    + '\n' +
-                //      'message: ' + error.message + '\n');
+                console.log("Error: No se pudo obtener la ubicación.\nCódigo: " + error.code + "\nMensaje: \n" + error.message);
+                navigator.notification.alert( "No es posible determinar la posición.\nRevisa que tengas habilitado el GPS de tu teléfono.", null, 'Error' );
             }
             
             function Audio(){
@@ -238,9 +225,6 @@
             }
             
             function onAudioError(message) {
-              //if( message !== "Camera cancelled." || message !== "Selection cancelled." ){
-              //    alert('Error: ' + message);
-              //}
               console.log(message);
             }
             
@@ -250,7 +234,6 @@
             }
             
             function salir(){
-                //event.preventDefault();
                 if(navigator.notification !== undefined){
                     navigator.notification.confirm(
                             '¿Salir?',     // mensaje (message)
@@ -279,9 +262,7 @@
             
             $('#home').on('pageinit', function(event){
                 $.mobile.loadPage('reporte.html');
-                //$.mobile.loadPage('foto.html');
                 $.mobile.loadPage('media.html');
-                //$.mobile.loadPage('audio.html');
                 
                 $.ajax({
                     url: urlCategorias,
@@ -291,28 +272,11 @@
                     var i = 3;
                     $.each(respuesta, function(key, data){
                         categorias[data.id] = data;
-                        //$('#categorias').append('<li data-role="list-divider">Reporte</li>');
                         $('#lista-categorias').append('<li><a href="#" id="'+data.id+'"><img src="img/'+data.imagen+'" /><h3>'+data.nombre+'</h3><p>'+data.descripcion+'</p></a></li>');
-                        /*if(i === 2){
-                            listaCategorias += '</div>';
-                        }
-                        if(i > 1){
-                            listaCategorias += '<div class="ui-grid-a">';
-                            i = 0;
-                        }
-                        if(i === 0){
-                            listaCategorias += '<div class="ui-block-a"><a href="#" data-role="button" id="'+data.id+'" class="boton_alerta" data-theme="'+data.theme+'">'+data.nombre+'</a></div>';
-                        }
-                        if(i === 1){
-                            listaCategorias += '<div class="ui-block-b"><a href="#" data-role="button" id="'+data.id+'" class="boton_alerta" data-theme="'+data.theme+'">'+data.nombre+'</a></div>';
-                        }
-                        i++;*/
                     });
                     $('#lista-categorias').listview('refresh');
                     console.log(JSON.stringify(categorias));
                     window.localStorage.setItem("categorias", JSON.stringify(categorias));
-                    /*$('#categorias').html(listaCategorias);
-                    $('#categorias a').button();*/
                 }).fail(function (){
                     alert("Error al intentar conectar con el servidor.");
                 });
@@ -336,7 +300,6 @@
                         if(respuesta_i){
                             incidentes[id] = {};
                             
-                            //$('#lista-reportes').append('<li data-role="list-divider">Tipo de reporte</li>');
                             $.each(respuesta_i, function(i, incidente){
                                 incidentes[id][incidente.id] = incidente;
                                 $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
