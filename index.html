@@ -56,10 +56,61 @@
             </div>
         </div>
         
+        <div data-role="page" id="home" data-title="Reporte" data-dom-cache="true">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <h1>Inicio</h1>
+            </div>
+            <div data-role="content">
+                <div id="categorias">
+                    <ul data-role="listview"  id="lista-categorias">
+                    
+                    </ul>
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
+                        <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
+                        <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
+                        <li><a href="#ajustes" data-icon="gear" data-iconpos="top">Ajustes</a></li>
+                    </ul>
+                </div><!-- /navbar -->
+            </div>
+        </div>
+        <div data-role="page" id="ajustes" data-title="Ajustes" data-dom-cache="true">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <h1>Ajustes</h1>
+            </div>
+            <div data-role="content">
+                <!-- Tipos de ajustes -->
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#cuenta">Datos personales</a></li>
+                    <li><a href="#ws" data-transition="slide">Servicios web</a></li>
+                </ul>
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#" onclick="javascript: salir();">Salir</a></li>
+                </ul>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <div class="ui-bar ui-bar-e">
+                    <p><small>Host: <span id="base_url"></span></small></p>
+                </div>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" data-icon="home" data-iconpos="top">Home</a></li>
+                        <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
+                        <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
+                        <li><a href="#ajustes" class="ui-btn-active ui-state-persist" data-icon="gear" data-iconpos="top">Ajustes</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
         <!-- Datos para conexión a los Web Services -->
         <div data-role="page" id="ws" data-title="Servicios Web" data-dom-cache="true">
             <div data-role="header" data-position="fixed" data-theme="d">
-                <a href="#bienvenida" data-icon="arrow-l" data-direction="reverse" data-transition="slideup">Atrás</a>
+                <a href="#" data-icon="arrow-l" data-rel="back" data-direction="reverse" data-transition="slideup">Atrás</a>
                 <h1>Servicios Web</h1>
             </div>
             <div data-role="content">
@@ -72,25 +123,57 @@
                     </div>
             </div>
         </div>
+        
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
         <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script>
             FastClick.attach(document.body);
+            
+            $.mobile.defaultPageTransition = "none";
+            $.mobile.transitionFallbacks.slide = "none";
+            $.mobile.transitionFallbacks.fade = "none";
+            $.mobile.page.prototype.options.domCache = true;
             $.mobile.page.prototype.options.backBtnText = "Atrás";
             $.support.cors = true;
             $.mobile.allowCrossDomainPages = true;
-            window.localStorage.setItem('ws_host', "http://rc.softpak.com.mx"); 
-            window.localStorage.setItem('ws_ruta', "/alerta/index.php/ws/app/"); 
-                
+
+            var latitud = "";
+            var longitud = "";
+            var destinationType; // formato del valor devuelto por la cámara
+            var pictureSource;
+            var watchID = null;
+            
+            if(window.localStorage.getItem('ws_host') === null || window.localStorage.getItem('ws_ruta') === null){
+                window.localStorage.setItem('ws_host', "http://rc.softpak.com.mx"); 
+                window.localStorage.setItem('ws_ruta', "/alerta/index.php/ws/app/"); 
+            }
+            
+            var urlCategorias = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"get_categorias";
+            var urlIncidentes = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"get_incidentes";
+            var urlMedia = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"add_media";
+            var idEvento = window.localStorage.getItem('id_evento');
+            var idPersona = window.localStorage.getItem('id_persona');
+            var listaCategorias = "";
+            var incidentes = {};
+            var categorias = {};
+            
+            // Función que se dispara cuando el dispositivo da la señal de "deviceready" (preparado)
             document.addEventListener("deviceready", onDeviceReady, false);
             
             function onDeviceReady(){
                 console.log("Dispositivo preparado!");
+                pictureSource=navigator.camera.PictureSourceType;
+                destinationType=navigator.camera.DestinationType;
+                
+                // Throw an error if no update is received every 30 seconds
+                var options = { enableHighAccuracy : true, maximumAge: 3000, timeout: 5000 };
+                watchID = navigator.geolocation.watchPosition(onGPSSuccess, onGPSError, options);
+                
                 var id_persona = window.localStorage.getItem("id_persona");
                 if(id_persona){
-                    window.location = "home.html";
+                    $.mobile.changePage('#home', {transition: 'fade'});
                 }
                 checkConnection();
             }
@@ -109,6 +192,170 @@
                 if(networkState === Connection.NONE)
                     navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.")
             }
+            
+            function Photo() {
+                navigator.camera.getPicture(onPhotoSuccess, onPhotoError, { EncodingType: 0, quality: 30, targetWidth: 640, targetHeight: 480,
+                        destinationType: destinationType.DATA_URL });
+            }
+            
+            function onPhotoSuccess(imageData) {
+                
+                // Uncomment to view the base64 encoded image data
+                console.log(imageData);
+                // recolecta los valores que inserto el usuario
+
+                $.ajax({
+                    url: urlMedia,
+                    dataType: "json",
+                    data: { id_persona: idPersona, 
+                            id_evento: idEvento, 
+                            latitud: latitud,
+                            longitud: longitud, 
+                            tipo: "image/jpeg",
+                            data: imageData }
+                  }).done(function( respuesta ) {
+                        if( respuesta.mensaje === 'ok' ){
+                            navigator.notification.alert("Imagen enviada correctamente");
+                        }else{
+                            navigator.notification.alert( respuesta.mensaje );
+                        }
+                  }).fail(function ( error, mensaje ){
+                      console.log("Error: "+mensaje);
+                      navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
+                  });
+            }
+            
+            function onPhotoError(message) {
+              console.log(message);
+            }
+            
+            // onGPSSuccess Geolocation
+            //
+            function onGPSSuccess(position) {
+                window.localStorage.setItem("latitud", position.coords.latitude);
+                window.localStorage.setItem("longitud", position.coords.longitude);
+                latitud = position.coords.latitude;
+                longitud = position.coords.longitude;
+            }
+
+            // onGPSError Callback receives a PositionError object
+            //
+            function onGPSError(error) {
+                console.log("Error: No se pudo obtener la ubicación.\nCódigo: " + error.code + "\nMensaje: \n" + error.message);
+                navigator.notification.alert( "No es posible determinar la posición.\nRevisa que tengas habilitado el GPS de tu teléfono.", null, 'Error' );
+            }
+            
+            function Audio(){
+                navigator.device.capture.captureAudio(onAudioSuccess, onAudioError, {limit:1});
+            }
+            
+            function onAudioSuccess(audioData) {
+                
+                // Uncomment to view the base64 encoded image data
+                console.log(audioData);
+                var urlAudio = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
+                // recolecta los valores que inserto el usuario
+
+                $.ajax({
+                    url: archivoFoto,
+                    dataType: "json",
+                    data: { id: idAlerta, imagen: "data:image/jpeg;base64," + imageData }
+                  }).done(function( respuesta ) {
+                      if( respuesta.validacion === 'error' ){
+                          navigator.notification.alert( respuesta.mensaje, null, 'Error' );
+                      }else{
+                          window.location = "home.html";
+                      }
+                  }).fail(function (){
+                      navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
+                  });
+            }
+            
+            function onAudioError(message) {
+              console.log(message);
+            }
+            
+            function logout(){
+                var ws_host = window.localStorage.getItem('ws_host');
+                var ws_ruta = window.localStorage.getItem('ws_ruta');
+                window.localStorage.clear();
+                
+                window.localStorage.setItem('ws_host', ws_host);
+                window.localStorage.setItem('ws_ruta', ws_ruta);
+                
+                $.mobile.changePage('#bienvenida', {transition: 'fade'});
+            }
+            
+            function salir(){
+                if(navigator.notification !== undefined){
+                    navigator.notification.confirm(
+                            '¿Salir?',     // mensaje (message)
+                            logout,      // función 'callback' a llamar con el índice del botón pulsado (confirmCallback)
+                            'Confirmación',            // titulo (title)
+                            'No,Si'       // botones (buttonLabels)
+                    );
+                }else{
+                    if(confirm('Salir?')){
+                        logout();
+                    }
+                }
+            }
+            
+            $('#home').on('pageinit', function(event){
+                $.mobile.loadPage('reporte.html');
+                $.mobile.loadPage('media.html');
+                
+                $.ajax({
+                    url: urlCategorias,
+                    dataType: "jsonp",
+                    crossDomain: "true"
+                }).done(function( respuesta ) {
+                    var i = 3;
+                    $.each(respuesta, function(key, data){
+                        categorias[data.id] = data;
+                        $('#lista-categorias').append('<li><a href="#" id="'+data.id+'"><img src="img/'+data.imagen+'" /><h3>'+data.nombre+'</h3><p>'+data.descripcion+'</p></a></li>');
+                    });
+                    $('#lista-categorias').listview('refresh');
+                    console.log(JSON.stringify(categorias));
+                    window.localStorage.setItem("categorias", JSON.stringify(categorias));
+                }).fail(function (){
+                    alert("Error al intentar conectar con el servidor.");
+                });
+                
+                $('#categorias').on('click','a',function(){
+                    $.mobile.loading( 'show', {
+                            text: 'Cargando...',
+                            textVisible: true,
+                            theme: 'z',
+                            html: ""
+                    });
+                    var id = $(this).attr('id');
+                    $('#lista-reportes').html('');
+                    // Se obtienen los incidentes por categoria
+                    $.ajax({
+                        url: urlIncidentes,
+                        dataType: "jsonp",
+                        crossDomain: "true",
+                        data: { id_categoria: id }
+                    }).done(function( respuesta_i ) {
+                        if(respuesta_i){
+                            incidentes[id] = {};
+                            
+                            $.each(respuesta_i, function(i, incidente){
+                                incidentes[id][incidente.id] = incidente;
+                                $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
+                            });
+                            $('#lista-reportes').listview('refresh');
+                            console.log(JSON.stringify(incidentes));
+                            window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
+                            $.mobile.loading('hide');
+                            $.mobile.changePage('#reporte', {transition: 'none'});
+                        }
+                    }).fail(function (){
+                        alert("Error al intentar conectar con el servidor.");
+                    });
+                });
+            });
             
             $(document).ready(function(){
                 
@@ -141,7 +388,7 @@
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
                             $.mobile.loading('hide');
-                            window.location = "home.html";
+                            $.mobile.changePage('#home', {transition: 'fade'});
                           }else if( respuesta.validacion === 'error' ){
                               alert( respuesta.mensaje );
                               $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
@@ -157,6 +404,11 @@
                       
                       return false;
                       
+                });
+                
+                $('#ajustes').on( 'pageshow',function(event, ui){
+                    var url = window.localStorage.getItem("ws_host")+window.localStorage.getItem("ws_ruta");
+                    $('#base_url').html(url);
                 });
                 
                 $('#ws').on( 'pageshow',function(event, ui){
@@ -175,7 +427,7 @@
                     window.localStorage.setItem('ws_ruta', ruta);
                     
                     alert("Datos actualizados");
-                    $.mobile.changePage('#bienvenida', {transition: 'slideup', reverse: true});
+                    $.mobile.changePage('#ajustes', {transition: 'slide', reverse: true});
                 });
             });
         </script>
