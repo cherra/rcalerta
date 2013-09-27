@@ -270,6 +270,8 @@
                 window.localStorage.setItem("longitud", position.coords.longitude);
                 latitud = position.coords.latitude;
                 longitud = position.coords.longitude;
+                
+                console.log("Posición: " + latitud + ", " + longitud);
             }
 
             // onGPSError Callback receives a PositionError object
@@ -336,6 +338,12 @@
             }
             
             $('#home').on('pageinit', function(event){
+                $.mobile.loading( 'show', {
+                        text: 'Cargando catálogos...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                });
                 $.ajax({
                     url: urlCategorias,
                     dataType: "jsonp",
@@ -345,10 +353,32 @@
                     $.each(respuesta, function(key, data){
                         categorias[data.id] = data;
                         $('#lista-categorias').append('<li><a href="#" id="'+data.id+'"><img src="img/'+data.imagen+'" /><h3>'+data.nombre+'</h3><p>'+data.descripcion+'</p></a></li>');
+                        
+                        // Se obtienen los tipos de reporte de la categoría
+                        // y se almacenan en el array incidentes
+                        $.ajax({
+                            url: urlIncidentes,
+                            dataType: "jsonp",
+                            crossDomain: "true",
+                            data: { id_categoria: data.id }
+                        }).done(function( respuesta_i ) {
+                            if(respuesta_i){
+                                incidentes[data.id] = {};
+                                $.each(respuesta_i, function(i, incidente){
+                                    incidentes[data.id][incidente.id] = incidente;
+                                });
+                            }
+                            console.log(JSON.stringify(incidentes));
+                            window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
+                        }).fail(function (){
+                            alert("Error al intentar conectar con el servidor.");
+                        });
+                        $.mobile.loading('hide');
                     });
                     $('#lista-categorias').listview('refresh');
                     console.log(JSON.stringify(categorias));
                     window.localStorage.setItem("categorias", JSON.stringify(categorias));
+                    
                 }).fail(function (){
                     alert("Error al intentar conectar con el servidor.");
                 });
@@ -365,28 +395,12 @@
                     var id = $(this).attr('id');
                     $('#lista-reportes').html('');
                     // Se obtienen los incidentes por categoria
-                    $.ajax({
-                        url: urlIncidentes,
-                        dataType: "jsonp",
-                        crossDomain: "true",
-                        data: { id_categoria: id }
-                    }).done(function( respuesta_i ) {
-                        if(respuesta_i){
-                            incidentes[id] = {};
-                            
-                            $.each(respuesta_i, function(i, incidente){
-                                incidentes[id][incidente.id] = incidente;
-                                $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
-                            });
-                            console.log(JSON.stringify(incidentes));
-                            window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
-                            $.mobile.loading('hide');
-                            $.mobile.changePage('#reporte', {transition: 'none'});
-                            $('#lista-reportes').listview();
-                        }
-                    }).fail(function (){
-                        alert("Error al intentar conectar con el servidor.");
+                    $.each(incidentes[id], function(i, incidente){
+                        $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
                     });
+                    $.mobile.loading('hide');
+                    $.mobile.changePage('#reporte', {transition: 'none'});
+                    $('#lista-reportes').listview('refresh');
                 });
             });
             
