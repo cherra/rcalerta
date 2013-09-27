@@ -124,6 +124,20 @@
             </div>
         </div>
         
+        <!-- Listado de reportes -->
+        <div data-role="page" id="reporte" data-title="Reporte ciudadano" data-dom-cache="true">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <a href="#home" data-icon="arrow-l" data-direction="reverse" data-transition="none">Atrás</a>
+                <h1>Reporte</h1>
+            </div>
+            <div data-role="content">
+                <!-- Lista de reportes de la categoría -->
+                <ul data-role="listview"  id="lista-reportes">
+                    
+                </ul>
+            </div>
+        </div>
+        
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
@@ -302,7 +316,6 @@
             }
             
             $('#home').on('pageinit', function(event){
-                $.mobile.loadPage('reporte.html');
                 $.mobile.loadPage('media.html');
                 
                 $.ajax({
@@ -321,6 +334,8 @@
                 }).fail(function (){
                     alert("Error al intentar conectar con el servidor.");
                 });
+                
+                //$('#lista-reportes').listview();
                 
                 $('#categorias').on('click','a',function(){
                     $.mobile.loading( 'show', {
@@ -345,11 +360,45 @@
                                 incidentes[id][incidente.id] = incidente;
                                 $('#lista-reportes').append('<li><a href="#" id="'+incidente.id+'"><h3>'+incidente.nombre+'</h3><p>'+incidente.descripcion+'</p></a></li>');
                             });
-                            $('#lista-reportes').listview('refresh');
                             console.log(JSON.stringify(incidentes));
                             window.localStorage.setItem("incidentes", JSON.stringify(incidentes));
                             $.mobile.loading('hide');
                             $.mobile.changePage('#reporte', {transition: 'none'});
+                            $('#lista-reportes').listview();
+                        }
+                    }).fail(function (){
+                        alert("Error al intentar conectar con el servidor.");
+                    });
+                });
+            });
+            
+            
+            $('#reporte').on('pageinit', function(event){
+                var urlReporte = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"insert_reporte";
+                var idTipo = "";
+                $('#lista-reportes').on('click','li a', function(){
+                    $.mobile.loading( 'show', {
+                            text: 'Enviando reporte',
+                            textVisible: true,
+                            theme: 'z',
+                            html: ""
+                    });
+                    idTipo = $(this).attr('id');
+                    console.log($(this).attr('id'));
+                    $.ajax({
+                        url: urlReporte,
+                        dataType: "jsonp",
+                        crossDomain: "true",
+                        data: { id_persona: idPersona, id_tipo: idTipo, mensaje: 'Reporte inicial' }
+                    }).done(function( respuesta ) {
+                        if( respuesta.mensaje === 'ok' ){
+                            window.localStorage.setItem("id_evento", respuesta.id_evento);
+                            window.localStorage.setItem("telefono", respuesta.telefono);
+                            $.mobile.loading('hide');
+                            $.mobile.changePage('#media', {transition: 'none'});
+                        }else if( respuesta.validacion === 'error' ){
+                            $.mobile.loading('hide');
+                            alert( respuesta.mensaje );
                         }
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
@@ -384,6 +433,7 @@
                         crossDomain: "true",
                         data: { email: datosEmail, password: datosPassword }
                       }).done(function( respuesta ) {
+                          $('#formulario input, #formulario button').removeAttr('disabled');
                           if( respuesta.validacion === 'ok' ){
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
