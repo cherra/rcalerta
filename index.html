@@ -221,10 +221,10 @@
                 states[Connection.CELL_2G]  = 'Conexión movil 2G';
                 states[Connection.CELL_3G]  = 'Conexión movil 3G';
                 states[Connection.CELL_4G]  = 'Conexión movil 4G';
-                states[Connection.NONE]     = 'Sin conexión'
+                states[Connection.NONE]     = 'Sin conexión';
                 console.log('Tipo de conexión: ' + states[networkState]);
                 if(networkState === Connection.NONE)
-                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.")
+                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.");
             }
             
             function Photo() {
@@ -490,12 +490,12 @@
                             html: ""
                     });
                     
-                    var datosEmail = $("#email").val()
-                    var datosPassword = $("#password").val()
+                    var datosEmail = $("#email").val();
+                    var datosPassword = $("#password").val();
                     
                     $('#formulario input, #formulario button').attr('disabled','disabled'); //deshabilita el formulario
                     
-                    var archivoValidacion = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"login"
+                    var archivoValidacion = window.localStorage.getItem('ws_host')+window.localStorage.getItem('ws_ruta')+"login";
                     // recolecta los valores que inserto el usuario
                     
                     $.ajax({
