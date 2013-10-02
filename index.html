@@ -25,6 +25,23 @@
         <meta name="viewport" content="user-scalable=no, maximum-scale=1.5, minimum-scale=0.75, width=device-width" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
+        <style>
+            textarea.ui-input-text { 
+                background-image: none; 
+                padding: .4em; 
+                margin: .5em 0; 
+                min-height: 1.4em; 
+                line-height: 1.4em; 
+                font-size: 16px; 
+                display: block; 
+                width: 100%; 
+                outline: 0; 
+            }
+            textarea.ui-mini { 
+                font-size: 16px;
+                height: 35px;
+            }
+        </style>
     </head>
     <body>
         <div data-role="page" id="bienvenida" data-title="Bienvenida">
@@ -138,21 +155,42 @@
             </div>
         </div>
         
-        <div data-role="page" id="media" data-dom-cache="true">
+        <div data-role="page" id="media" data-dom-cache="true" data-theme="d">
             <div data-role="header" data-position="fixed" data-theme="d">
                 <a href="#reporte" data-icon="arrow-l" data-direction="reverse" data-transition="none">Atrás</a>
                 <h1>Media</h1>
             </div>
-            <div data-role="content">
-                    <label for="texto">Mensaje:</label>
+            <div data-role="content" data-theme="d">
+                <div id="chat">
+                    
+                </div>
+<!--                <label for="texto">Mensaje:</label>
                     <textarea name="texto" id="texto" rows="5" placeholder="Introduce una descripción breve del problema."></textarea>
                     <div data-role="fieldcontain" class="ui-hide-label">
                         <button data-role="button" data-theme="b" id="btn_enviar_texto">Enviar texto</button>
                     </div>
-                <p>Complementa tu reporte con fotografías y/o audio:</p>
-                <div class="ui-grid-a">
-                    <div class="ui-block-a"><a href="#" onclick="Photo();" data-role="button" data-icon="plus" data-iconpos="top">Foto</a></div>
-                    <div class="ui-block-b"><a href="#" onclick="Audio();" data-role="button" data-icon="plus" data-iconpos="top">Audio</a></div>
+                    <p>Complementa tu reporte con fotografías y/o audio:</p>
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a"><a href="#" onclick="Photo();" data-role="button" data-icon="plus" data-iconpos="top">Foto</a></div>
+                        <div class="ui-block-b"><a href="#" onclick="Audio();" data-role="button" data-icon="plus" data-iconpos="top">Audio</a></div>
+                    </div>-->
+            </div>
+            <div data-role="footer" data-position="fixed" data-theme="d">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a" style="width: 10%;">
+                        <!-- <a href="#" onclick="Photo();" data-role="button" data-mini="true" data-iconpos="notext" data-icon="plus"></a> -->
+                        <a href="#" onclick="Photo();" data-role="button" data-mini="true">F</a>
+                    </div>
+                    <div class="ui-block-b" style="width: 10%;">
+                        <!-- <a href="#" onclick="Audio();" data-role="button" data-mini="true"  data-iconpos="notext" data-icon="plus"></a> -->
+                        <a href="#" onclick="Audio();" data-role="button" data-mini="true">A</a>
+                    </div>
+                    <div class="ui-block-c" style="width: 60%;">
+                        <textarea name="texto" id="texto" data-mini="true"></textarea>
+                    </div>
+                    <div class="ui-block-d" style="width: 20%;">
+                        <a href="#" id="btn_enviar_texto" data-role="button" data-mini="true">Enviar</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -201,6 +239,7 @@
                 pictureSource=navigator.camera.PictureSourceType;
                 destinationType=navigator.camera.DestinationType;
                 
+                document.addEventListener("backbutton", onBackKey, true);
                 // Throw an error if no update is received every 30 seconds
                 var options = { enableHighAccuracy : true, maximumAge: 3000, timeout: 5000 };
                 watchID = navigator.geolocation.watchPosition(onGPSSuccess, onGPSError, options);
@@ -210,6 +249,19 @@
                     $.mobile.changePage('#home', {transition: 'fade'});
                 }
                 checkConnection();
+            }
+            
+            function onBackKey(){
+                if($.mobile.activePage.attr('id') === 'home'){
+                    navigator.notification.confirm('Deseas salir de RC@Alerta?',onCerrar, 'Salir', 'No,Si');
+                }else{
+                    $.mobile.changePage('#home', {transition: 'fade'});
+                }
+            }
+            
+            function onCerrar(boton){
+                if(boton === 2)
+                    navigator.app.exitApp();
             }
             
             function checkConnection() {
@@ -235,12 +287,18 @@
             function onPhotoSuccess(imageData) {
                 
                 // Uncomment to view the base64 encoded image data
-                console.log(imageData);
+                //console.log(imageData);
                 // recolecta los valores que inserto el usuario
-
+                $.mobile.loading( 'show', {
+                        text: 'Enviando imagen...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                });
                 $.ajax({
                     url: urlMedia,
                     dataType: "json",
+                    crossDomain: "true",
                     data: { id_persona: idPersona, 
                             id_evento: idEvento, 
                             latitud: latitud,
@@ -253,9 +311,11 @@
                         }else{
                             navigator.notification.alert( respuesta.mensaje );
                         }
+                        $.mobile.loading('hide');
                   }).fail(function ( error, mensaje ){
                       console.log("Error: "+mensaje);
-                      navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
+                      navigator.notification.alert("Ocurrió un error al enviar la foto: "+mensaje, null, 'Error');
+                      $.mobile.loading('hide');
                   });
             }
             
@@ -278,7 +338,7 @@
             //
             function onGPSError(error) {
                 console.log("Error: No se pudo obtener la ubicación.\nCódigo: " + error.code + "\nMensaje: \n" + error.message);
-                navigator.notification.alert( "No es posible determinar la posición.\nRevisa que tengas habilitado el GPS de tu teléfono.", null, 'Error' );
+                //navigator.notification.alert( "No es posible determinar la posición.\nRevisa que tengas habilitado el GPS de tu teléfono.", null, 'Error' );
             }
             
             function Audio(){
@@ -336,6 +396,10 @@
                     }
                 }
             }
+            
+            $(document).bind('pagechange', function(e, data){
+                console.log($.mobile.activePage.attr('id'));
+            });
             
             $('#home').on('pageinit', function(event){
                 $.mobile.loading( 'show', {
@@ -426,6 +490,7 @@
                         if( respuesta.mensaje === 'ok' ){
                             window.localStorage.setItem("id_evento", respuesta.id_evento);
                             window.localStorage.setItem("telefono", respuesta.telefono);
+                            $('#chat').html('');
                             $.mobile.loading('hide');
                             $.mobile.changePage('#media', {transition: 'none'});
                         }else if( respuesta.validacion === 'error' ){
@@ -442,6 +507,7 @@
                 $('#btn_enviar_texto').click(function(){
                     var texto = $('#texto').val();
 
+                    $('#chat').append('<p>'+texto+'</p>');
                     $.mobile.loading( 'show', {
                             text: 'Enviando descripción.',
                             textVisible: true,
