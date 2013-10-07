@@ -22,7 +22,7 @@
         <meta charset="utf-8" />
         <!-- <meta name="format-detection" content="telephone=no" /> -->
         <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" /> -->
-        <meta name="viewport" content="user-scalable=no, maximum-scale=1.5, minimum-scale=0.75, width=device-width" />
+        <meta name="viewport" content="user-scalable=no, maximum-scale=1.5, minimum-scale=0.75, width=device-width, height=device-height" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
         <style>
@@ -40,6 +40,26 @@
             textarea.ui-mini { 
                 font-size: 16px;
                 height: 35px;
+            }
+            
+            .ui-icon-audio {
+                background-image: url("css/images/audio.png");
+            }
+            
+            .ui-icon-camara {
+                background-image: url("css/images/camara.png");
+            }
+            
+            @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+                .ui-icon-audio {
+                        background-image: url("css/images/audio-hi.png");
+                        background-size: 18px 18px;
+                }  
+                
+                .ui-icon-camara {
+                        background-image: url("css/images/camara-hi.png");
+                        background-size: 18px 18px;
+                }  
             }
         </style>
     </head>
@@ -179,11 +199,11 @@
                 <div class="ui-grid-c">
                     <div class="ui-block-a" style="width: 10%;">
                         <!-- <a href="#" onclick="Photo();" data-role="button" data-mini="true" data-iconpos="notext" data-icon="plus"></a> -->
-                        <a href="#" onclick="Photo();" data-role="button" data-mini="true">F</a>
+                        <a href="#" onclick="Photo();" data-role="button" data-icon="camara" data-iconpos="notext"></a>
                     </div>
                     <div class="ui-block-b" style="width: 10%;">
                         <!-- <a href="#" onclick="Audio();" data-role="button" data-mini="true"  data-iconpos="notext" data-icon="plus"></a> -->
-                        <a href="#" onclick="Audio();" data-role="button" data-mini="true">A</a>
+                        <a href="#" onclick="Audio();" data-role="button" data-icon="audio" data-iconpos="notext"></a>
                     </div>
                     <div class="ui-block-c" style="width: 60%;">
                         <textarea name="texto" id="texto" data-mini="true"></textarea>
@@ -295,32 +315,36 @@
                         theme: 'z',
                         html: ""
                 });
+                //$('#chat').append('<img src="data:image/jpeg;base64,'+imageData+'" width="128" height="128">');
                 $.ajax({
                     url: urlMedia,
                     dataType: "json",
                     crossDomain: "true",
+                    type: 'POST',
                     data: { id_persona: idPersona, 
-                            id_evento: idEvento, 
-                            latitud: latitud,
-                            longitud: longitud, 
-                            tipo: "image/jpeg",
-                            data: imageData }
+                        id_evento: idEvento, 
+                        latitud: latitud,
+                        longitud: longitud,
+                        tipo: "image/jpeg",
+                        data: imageData}
                   }).done(function( respuesta ) {
                         if( respuesta.mensaje === 'ok' ){
-                            navigator.notification.alert("Imagen enviada correctamente");
+                            $('#chat').append('<p><small>'+respuesta.hora+'</small> <img src="data:image/jpeg;base64,'+imageData+'" width="128" height="128"></p>');
+                            //navigator.notification.alert("Imagen enviada correctamente");
                         }else{
                             navigator.notification.alert( respuesta.mensaje );
                         }
                         $.mobile.loading('hide');
-                  }).fail(function ( error, mensaje ){
-                      console.log("Error: "+mensaje);
-                      navigator.notification.alert("Ocurrió un error al enviar la foto: "+mensaje, null, 'Error');
+                  }).fail(function ( data, mensaje, error ){
+                      console.log("Error: "+error);
+                      navigator.notification.alert("Ocurrió un error al enviar la foto: "+error+"\n"+urlMedia, null, 'Error');
                       $.mobile.loading('hide');
                   });
             }
             
             function onPhotoError(message) {
               console.log(message);
+              navigator.notification.alert("Error al guardar la foto: "+message, null, 'Error');
             }
             
             // onGPSSuccess Geolocation
@@ -348,14 +372,19 @@
             function onAudioSuccess(audioData) {
                 
                 // Uncomment to view the base64 encoded image data
-                console.log(audioData);
-                var urlAudio = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
+                //console.log(audioData);
+                //var urlAudio = window.localStorage.getItem('base_url')+"ajax/guarda_imagen";
                 // recolecta los valores que inserto el usuario
-
+                /*
                 $.ajax({
-                    url: archivoFoto,
+                    url: urlMedia,
                     dataType: "json",
-                    data: { id: idAlerta, imagen: "data:image/jpeg;base64," + imageData }
+                    crossDomain: "true",
+                    data: { id_persona: idPersona, 
+                        id_evento: idEvento, 
+                        latitud: latitud,
+                        longitud: longitud,
+                        tipo: "data:image/jpeg;base64," + imageData }
                   }).done(function( respuesta ) {
                       if( respuesta.validacion === 'error' ){
                           navigator.notification.alert( respuesta.mensaje, null, 'Error' );
@@ -365,6 +394,7 @@
                   }).fail(function (){
                       navigator.notification.alert("Ocurrió un error al enviar la foto.", null, 'Error');
                   });
+                  */
             }
             
             function onAudioError(message) {
@@ -507,7 +537,6 @@
                 $('#btn_enviar_texto').click(function(){
                     var texto = $('#texto').val();
 
-                    $('#chat').append('<p>'+texto+'</p>');
                     $.mobile.loading( 'show', {
                             text: 'Enviando descripción.',
                             textVisible: true,
@@ -531,10 +560,10 @@
                             longitud: longitud}
                     }).done(function( respuesta ) {
                         $.mobile.loading('hide');
-                        if( respuesta.mensaje === 'ok' ){
-                            alert("Mensaje enviado correctamente");
-                        }else if( respuesta.validacion === 'error' ){
+                        if( respuesta.validacion === 'error' ){
                             alert( respuesta.mensaje );
+                        }else{
+                            $('#chat').append('<p><small>'+respuesta.hora+'</small> '+texto+'</p>');
                         }
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
@@ -574,13 +603,13 @@
                           if( respuesta.validacion === 'ok' ){
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
-                            $.mobile.loading('hide');
                             $.mobile.changePage('#home', {transition: 'fade'});
                           }else if( respuesta.validacion === 'error' ){
                               alert( respuesta.mensaje );
                               $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
                               $('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
                           }
+                          $.mobile.loading('hide');
                       }).fail(function ( respuesta ){
                           $.mobile.loading('hide');
                           alert("Error al intentar conectar con el servidor: "+archivoValidacion);
