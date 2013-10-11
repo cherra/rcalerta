@@ -144,7 +144,7 @@
         </div>
         
         <!-- Listado de reportes -->
-        <div data-role="page" id="reporte" data-title="Reporte ciudadano" data-dom-cache="true">
+        <div data-role="page" id="reporte" data-title="Reporte ciudadano" data-dom-cache="true" data-theme="d">
             <div data-role="header" data-position="fixed" data-theme="d">
                 <a href="#home" data-icon="arrow-l" data-direction="reverse" data-transition="none">Atrás</a>
                 <h1>Reporte</h1>
@@ -166,31 +166,23 @@
                 <div id="chat">
                     
                 </div>
-<!--                <label for="texto">Mensaje:</label>
-                    <textarea name="texto" id="texto" rows="5" placeholder="Introduce una descripción breve del problema."></textarea>
-                    <div data-role="fieldcontain" class="ui-hide-label">
-                        <button data-role="button" data-theme="b" id="btn_enviar_texto">Enviar texto</button>
-                    </div>
-                    <p>Complementa tu reporte con fotografías y/o audio:</p>
-                    <div class="ui-grid-a">
-                        <div class="ui-block-a"><a href="#" onclick="Photo();" data-role="button" data-icon="plus" data-iconpos="top">Foto</a></div>
-                        <div class="ui-block-b"><a href="#" onclick="Audio();" data-role="button" data-icon="plus" data-iconpos="top">Audio</a></div>
-                    </div>-->
             </div>
             <div data-role="footer" data-position="fixed" data-theme="d">
-                <div class="ui-grid-c">
-                    <div class="ui-block-a" style="width: 10%;">
-                        <!-- <a href="#" onclick="Photo();" data-role="button" data-mini="true" data-iconpos="notext" data-icon="plus"></a> -->
-                        <a href="#" onclick="Photo();" data-role="button" data-icon="camara-white" data-iconpos="notext"></a>
+                <div class="ui-grid-b">
+                    <div class="ui-block-a" style="width: 30%;">
+                        <div data-role="controlgroup" data-type="horizontal" style="margin-left: 5px;">
+                            <a href="#" onclick="Photo();" data-role="button" data-icon="camara-white" data-iconpos="notext"></a>
+                            <a href="#" onclick="Audio();" data-role="button" data-icon="audio-white" data-iconpos="notext"></a>
+                        </div>
                     </div>
-                    <div class="ui-block-b" style="width: 10%;">
-                        <!-- <a href="#" onclick="Audio();" data-role="button" data-mini="true"  data-iconpos="notext" data-icon="plus"></a> -->
-                        <a href="#" onclick="Audio();" data-role="button" data-icon="audio-white" data-iconpos="notext"></a>
-                    </div>
-                    <div class="ui-block-c" style="width: 60%;">
+<!--                    <div class="ui-block-b" style="width: 15%;">
+                         <a href="#" onclick="Audio();" data-role="button" data-mini="true"  data-iconpos="notext" data-icon="plus"></a> 
+                        
+                    </div>-->
+                    <div class="ui-block-b" style="width: 45%;">
                         <textarea name="texto" id="texto" data-mini="true"></textarea>
                     </div>
-                    <div class="ui-block-d" style="width: 20%;">
+                    <div class="ui-block-c" style="width: 25%;">
                         <a href="#" id="btn_enviar_texto" data-role="button" data-mini="true">Enviar</a>
                     </div>
                 </div>
