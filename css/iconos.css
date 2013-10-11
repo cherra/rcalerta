@@ -1,0 +1,55 @@
+.ui-icon-audio {
+    background-image: url("images/audio.png");
+}
+
+.ui-icon-audio-white {
+    background-image: url("images/audio-white.png");
+}
+
+.ui-icon-camara {
+    background-image: url("images/camara.png");
+}
+
+.ui-icon-camara-white {
+    background-image: url("images/camara-white.png");
+}
+
+.ui-icon-phone {
+    background-image: url("images/phone.png");
+}
+
+.ui-icon-phone-white {
+    background-image: url("images/phone-white.png");
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    .ui-icon-audio {
+            background-image: url("images/audio-hi.png");
+            background-size: 18px 18px;
+    }  
+
+    .ui-icon-audio {
+            background-image: url("images/audio-hi-white.png");
+            background-size: 18px 18px;
+    }  
+
+    .ui-icon-camara {
+            background-image: url("images/camara-hi.png");
+            background-size: 18px 18px;
+    }
+
+    .ui-icon-camara-white {
+            background-image: url("images/camara-hi-white.png");
+            background-size: 18px 18px;
+    }
+
+    .ui-icon-phone {
+            background-image: url("images/phone-hi.png");
+            background-size: 18px 18px;
+    }
+
+    .ui-icon-phone-white {
+            background-image: url("images/phone-hi-white.png");
+            background-size: 18px 18px;
+    }  
+}

@@ -25,6 +25,8 @@
         <meta name="viewport" content="user-scalable=no, maximum-scale=1.5, minimum-scale=0.75, width=device-width, height=device-height" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
+        <link rel="stylesheet" type="text/css" href="css/rcalerta.css" />
+        <link rel="stylesheet" type="text/css" href="css/iconos.css" />
         <style>
             textarea.ui-input-text { 
                 background-image: none; 
@@ -42,24 +44,9 @@
                 height: 35px;
             }
             
-            .ui-icon-audio {
-                background-image: url("css/images/audio.png");
-            }
-            
-            .ui-icon-camara {
-                background-image: url("css/images/camara.png");
-            }
-            
-            @media only screen and (-webkit-min-device-pixel-ratio: 2) {
-                .ui-icon-audio {
-                        background-image: url("css/images/audio-hi.png");
-                        background-size: 18px 18px;
-                }  
-                
-                .ui-icon-camara {
-                        background-image: url("css/images/camara-hi.png");
-                        background-size: 18px 18px;
-                }  
+            .boton-066 .ui-btn-inner{
+                padding: 0.1em 11px 0.1em;
+                font-size: 26px;
             }
         </style>
     </head>
@@ -87,9 +74,9 @@
         
         <div data-role="page" id="home" data-title="Reporte" data-dom-cache="true">
             <div data-role="header" data-position="fixed" data-theme="d">
-                <h1>Inicio</h1>
+                <h1>Reporte</h1>
             </div>
-            <div data-role="content">
+            <div data-role="content" data-theme="d">
                 <div id="categorias">
                     <ul data-role="listview"  id="lista-categorias">
                     
@@ -97,14 +84,17 @@
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
+                <a href="tel:066" data-role="button" data-icon="phone-white" data-theme="f" class="boton-066" style="width: 94%; left: 3%;">
+                    <strong>066</strong>
+                </a>
                 <div data-role="navbar">
                     <ul>
-                        <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Home</a></li>
+                        <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Inicio</a></li>
                         <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
                         <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
                         <li><a href="#ajustes" data-icon="gear" data-iconpos="top">Ajustes</a></li>
                     </ul>
-                </div><!-- /navbar -->
+                </div>
             </div>
         </div>
         <div data-role="page" id="ajustes" data-title="Ajustes" data-dom-cache="true">
@@ -127,7 +117,7 @@
                 </div>
                 <div data-role="navbar">
                     <ul>
-                        <li><a href="#home" data-icon="home" data-iconpos="top">Home</a></li>
+                        <li><a href="#home" data-icon="home" data-iconpos="top">Inicio</a></li>
                         <li><a href="#reportes" data-icon="grid" data-iconpos="top">Reportes</a></li>
                         <li><a href="#alertas" data-icon="info" data-iconpos="top">Alertas</a></li>
                         <li><a href="#ajustes" class="ui-btn-active ui-state-persist" data-icon="gear" data-iconpos="top">Ajustes</a></li>
@@ -191,11 +181,11 @@
                 <div class="ui-grid-c">
                     <div class="ui-block-a" style="width: 10%;">
                         <!-- <a href="#" onclick="Photo();" data-role="button" data-mini="true" data-iconpos="notext" data-icon="plus"></a> -->
-                        <a href="#" onclick="Photo();" data-role="button" data-icon="camara" data-iconpos="notext"></a>
+                        <a href="#" onclick="Photo();" data-role="button" data-icon="camara-white" data-iconpos="notext"></a>
                     </div>
                     <div class="ui-block-b" style="width: 10%;">
                         <!-- <a href="#" onclick="Audio();" data-role="button" data-mini="true"  data-iconpos="notext" data-icon="plus"></a> -->
-                        <a href="#" onclick="Audio();" data-role="button" data-icon="audio" data-iconpos="notext"></a>
+                        <a href="#" onclick="Audio();" data-role="button" data-icon="audio-white" data-iconpos="notext"></a>
                     </div>
                     <div class="ui-block-c" style="width: 60%;">
                         <textarea name="texto" id="texto" data-mini="true"></textarea>
