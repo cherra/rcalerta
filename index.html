@@ -25,9 +25,13 @@
         <meta name="viewport" content="user-scalable=no, maximum-scale=1.5, minimum-scale=0.75, width=device-width, height=device-height" />
         <title>RC@Alerta</title>
         <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
-        <link rel="stylesheet" type="text/css" href="css/rcalerta.css" />
+<!--        <link rel="stylesheet" type="text/css" href="css/rcalerta.css" />-->
         <link rel="stylesheet" type="text/css" href="css/iconos.css" />
         <style>
+            body{
+                -webkit-touch-callout:none !important;
+            }
+            
             textarea.ui-input-text { 
                 background-image: none; 
                 padding: .4em; 
@@ -40,7 +44,7 @@
                 outline: 0; 
             }
             textarea.ui-mini { 
-                font-size: 16px;
+                font-size: 0.9em;
                 height: 35px;
             }
             
@@ -48,6 +52,16 @@
                 padding: 0.1em 11px 0.1em;
                 font-size: 26px;
             }
+            
+            .bar-media .ui-btn{
+                padding: 0.2em 0.2em 0.2em;
+                margin: 0.2em 0 0.2em 0.3em;
+            }
+            
+            .bar-media textarea.ui-input-text.ui-mini {
+                margin: 0.3em 0;
+            }
+            
         </style>
     </head>
     <body>
@@ -84,9 +98,10 @@
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
-                <a href="tel:066" data-role="button" data-icon="phone-white" data-theme="f" class="boton-066" style="width: 94%; left: 3%;">
+                <div>
+                <a href="tel:066" data-role="button" data-icon="phone" data-theme="e" class="boton-066" style="width: 94%; left: 3%;">
                     <strong>066</strong>
-                </a>
+                </a></div>
                 <div data-role="navbar">
                     <ul>
                         <li><a href="#home" class="ui-btn-active ui-state-persist" data-icon="home" data-iconpos="top">Inicio</a></li>
@@ -167,22 +182,21 @@
                     
                 </div>
             </div>
-            <div data-role="footer" data-position="fixed" data-theme="d">
-                <div class="ui-grid-b">
-                    <div class="ui-block-a" style="width: 30%;">
-                        <div data-role="controlgroup" data-type="horizontal" style="margin-left: 5px;">
-                            <a href="#" onclick="Photo();" data-role="button" data-icon="camara-white" data-iconpos="notext"></a>
-                            <a href="#" onclick="Audio();" data-role="button" data-icon="audio-white" data-iconpos="notext"></a>
-                        </div>
+            <div data-role="footer" data-position="fixed" data-theme="d" class="bar-media">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a" style="width: 14%;">
+<!--                        <div data-role="controlgroup" data-type="horizontal" style="margin-left: 5px;" >-->
+                            <button onclick="Photo();" data-role="button" data-icon="camara-white" data-iconpos="notext"></button>
+                            
+<!--                        </div>-->
                     </div>
-<!--                    <div class="ui-block-b" style="width: 15%;">
-                         <a href="#" onclick="Audio();" data-role="button" data-mini="true"  data-iconpos="notext" data-icon="plus"></a> 
-                        
-                    </div>-->
-                    <div class="ui-block-b" style="width: 45%;">
+                    <div class="ui-block-b" style="width: 14%;">
+                        <button id="boton-audio" onclick="Audio();" data-role="button" data-icon="audio-white" data-iconpos="notext"></button>
+                    </div>
+                    <div class="ui-block-c" style="width: 47%;">
                         <textarea name="texto" id="texto" data-mini="true"></textarea>
                     </div>
-                    <div class="ui-block-c" style="width: 25%;">
+                    <div class="ui-block-d" style="width: 25%;">
                         <a href="#" id="btn_enviar_texto" data-role="button" data-mini="true">Enviar</a>
                     </div>
                 </div>
@@ -229,6 +243,9 @@
             document.addEventListener("deviceready", onDeviceReady, false);
             
             function onDeviceReady(){
+                if (parseFloat(window.device.version) >= 7.0) {
+                    document.body.style.marginTop = "20px";
+                }
                 console.log("Dispositivo preparado!");
                 pictureSource=navigator.camera.PictureSourceType;
                 destinationType=navigator.camera.DestinationType;
@@ -544,6 +561,26 @@
                     });
                     $('#texto').val('');
                 });
+                
+//                $('#boton-audio').on('taphold', function(){
+//                
+//                    navigator.notification.alert("Taphold", null, 'Evento!');
+//                    var src = "myrecording.wav";
+//                    var mediaRec = new Media(src,
+//                        // success callback
+//                        function() {
+//                            console.log("recordAudio():Audio Success");
+//                        },
+//
+//                        // error callback
+//                        function(err) {
+//                            console.log("recordAudio():Audio Error: "+ err.code);
+//                        });
+//
+//                    // Record audio
+//                    mediaRec.startRecord();
+//
+//                });
             });
             
             $(document).ready(function(){
@@ -619,6 +656,16 @@
                     alert("Datos actualizados");
                     $.mobile.changePage('#ajustes', {transition: 'slide', reverse: true});
                 });
+            });
+            
+            $(document).bind( "pagebeforechange", function( e, data ) {
+
+                    // We only want to handle changePage() calls where the caller is
+                    // asking us to load a page by URL.
+                    if ( typeof data.toPage === "string" ) {
+
+                            console.log(data.toPage);
+                    }
             });
         </script>
     </body>
