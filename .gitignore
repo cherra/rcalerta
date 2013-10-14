@@ -1,0 +1,10 @@
+.DS_Store
+._.DS_Store
+.cordova/
+certificates/
+nbproject/
+platforms/
+plugins/
+config/
+merges/
+test/

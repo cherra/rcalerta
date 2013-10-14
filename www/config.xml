@@ -52,12 +52,11 @@
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
     <gap:plugin name="org.apache.cordova.core.device" />
     <gap:plugin name="org.apache.cordova.core.geolocation" />
-    <gap:plugin name="org.apache.cordova.core.media-capture" />
-<!--    <gap:plugin name="org.apache.cordova.core.audiohandler" />-->
+<!--    <gap:plugin name="org.apache.cordova.core.media-capture" />
+    <gap:plugin name="org.apache.cordova.core.audiohandler" />
     <gap:plugin name="org.apache.cordova.core.network-information" />
     <gap:plugin name="org.apache.cordova.core.splashscreen" />
-    <gap:plugin name="org.apache.cordova.core.dialogs" />
-    <gap:plugin name="" />
+    <gap:plugin name="org.apache.cordova.core.dialogs" />-->
 
     <access origin="*" />
 <!--    <content src="index.html" />-->
