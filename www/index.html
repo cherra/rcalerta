@@ -28,8 +28,9 @@
 <!--        <link rel="stylesheet" type="text/css" href="css/rcalerta.css" />-->
         <link rel="stylesheet" type="text/css" href="css/iconos.css" />
         <style>
-            body{
-                -webkit-touch-callout:none !important;
+            *:not(input):not(textarea) {  /* Todos excepto inputs y textareas */
+                -webkit-touch-callout:none !important;  /* Desactivar el popup de ios cuando se deja presionado sobre un link */
+                -webkit-user-select: none !important;  /* Desactivar la selección/copiado de elementos */
             }
             
             textarea.ui-input-text { 
@@ -191,7 +192,7 @@
 <!--                        </div>-->
                     </div>
                     <div class="ui-block-b" style="width: 14%;">
-                        <button id="boton-audio" onclick="Audio();" data-role="button" data-icon="audio-white" data-iconpos="notext"></button>
+                        <button id="boton-audio" data-role="button" data-icon="audio-white" data-iconpos="notext"></button>
                     </div>
                     <div class="ui-block-c" style="width: 47%;">
                         <textarea name="texto" id="texto" data-mini="true"></textarea>
@@ -204,6 +205,7 @@
         </div>
         
         <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="PushNotification.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery.mobile.js"></script>
         <script type="text/javascript" src="js/fastclick.min.js"></script>
@@ -217,6 +219,8 @@
             $.mobile.page.prototype.options.backBtnText = "Atrás";
             $.support.cors = true;
             $.mobile.allowCrossDomainPages = true;
+            
+            var pushNotification; // Variable para las Push Notifications
 
             var latitud = "";
             var longitud = "";
@@ -247,6 +251,10 @@
                     document.body.style.marginTop = "20px";
                 }
                 console.log("Dispositivo preparado!");
+                
+                pushNotification = window.plugins.pushNotification;
+                pushNotification.setApplicationIconBadgeNumber(successCallback, errorCallback, 1);
+                
                 pictureSource=navigator.camera.PictureSourceType;
                 destinationType=navigator.camera.DestinationType;
                 
@@ -259,7 +267,38 @@
                 if(id_persona){
                     $.mobile.changePage('#home', {transition: 'fade'});
                 }
-                checkConnection();
+                //checkConnection();
+                
+                if ( device.platform === 'android' || device.platform === 'Android' )
+                {
+                    pushNotification.register(
+                        successHandler,
+                        pushErrorHandler, {
+                            "senderID":"replace_with_sender_id",
+                            "ecb":"onNotificationGCM"
+                        });
+                }
+                else
+                {
+                    pushNotification.register(
+                        pushTokenHandler,
+                        pushErrorHandler, {
+                            "badge":"true",
+                            "sound":"true",
+                            "alert":"true",
+                            "ecb":"onNotificationAPN"
+                        });
+                }
+            }
+            
+            function pushErrorHandler (error) {
+                alert('error = ' + error);
+            }
+            
+            function pushTokenHandler (result) {
+                // Your iOS push server needs to know the token before it can push to this device
+                // here is where you might want to send it the token for later use.
+                alert('device token = ' + result);
             }
             
             function onBackKey(){
@@ -525,6 +564,19 @@
             });
             
             $('#media').on('pageinit', function(event){
+                var src = "myrecording.wav";
+                var mediaRec = new Media(src,
+                    // success callback
+                    function() {
+                        console.log("recordAudio():Audio Success");
+                    },
+
+                    // error callback
+                    function(err) {
+                        console.log("recordAudio():Audio Error: "+ err.code);
+                    }
+                );
+                    
                 $('#btn_enviar_texto').click(function(){
                     var texto = $('#texto').val();
 
@@ -562,25 +614,19 @@
                     $('#texto').val('');
                 });
                 
-//                $('#boton-audio').on('taphold', function(){
-//                
-//                    navigator.notification.alert("Taphold", null, 'Evento!');
-//                    var src = "myrecording.wav";
-//                    var mediaRec = new Media(src,
-//                        // success callback
-//                        function() {
-//                            console.log("recordAudio():Audio Success");
-//                        },
-//
-//                        // error callback
-//                        function(err) {
-//                            console.log("recordAudio():Audio Error: "+ err.code);
-//                        });
-//
-//                    // Record audio
-//                    mediaRec.startRecord();
-//
-//                });
+                $('#boton-audio').on('touchstart', function(){
+                    // Record audio
+                    $('#chat').append('<p><small>Grabando...</small></p>');
+                    navigator.notification.beep(1);
+                    mediaRec.startRecord();
+
+                });
+                
+                $('#boton-audio').on('touchend', function(){
+                    // Stop audio recording
+                    mediaRec.stopRecord();
+                    navigator.notification.beep(1);
+                });
             });
             
             $(document).ready(function(){
