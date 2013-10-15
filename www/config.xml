@@ -48,7 +48,6 @@
     <gap:plugin name="org.apache.cordova.core.network-information" />
     <gap:plugin name="org.apache.cordova.core.splashscreen" />
     <gap:plugin name="org.apache.cordova.core.dialogs" />
-    <gap:plugin name="org.apache.cordova.core.audiohandler" />
     <access origin="*" />
     <content src="index.html" />
 </widget>
