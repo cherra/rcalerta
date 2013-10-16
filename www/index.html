@@ -721,6 +721,7 @@
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
                             actualizarToken();  //Se actualiza el token para las notificaciones
+                            $.mobile.changePage('#home', {transition: 'fade'});
                           }else if( respuesta.validacion === 'error' ){
                               alert( respuesta.mensaje );
                               $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
