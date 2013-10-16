@@ -263,36 +263,42 @@
                 destinationType=navigator.camera.DestinationType;
                 
                 document.addEventListener("backbutton", onBackKey, true);
-                // Throw an error if no update is received every 30 seconds
-                var options = { enableHighAccuracy : true, maximumAge: 3000, timeout: 5000 };
-                watchID = navigator.geolocation.watchPosition(onGPSSuccess, onGPSError, options);
                 
-                if ( device.platform === 'android' || device.platform === 'Android' )
-                {
-                    pushNotification.unregister(successHandler, pushErrorHandler);
-                    pushNotification.register(
-                        pushSuccessHandler,
-                        pushErrorHandler, {
-                            "senderID":"replace_with_sender_id",
-                            "ecb":"onNotificationGCM"
-                        });
+                if(checkConnection()){
+                
+                    // Throw an error if no update is received every 30 seconds
+                    var options = { enableHighAccuracy : true, maximumAge: 3000, timeout: 5000 };
+                    watchID = navigator.geolocation.watchPosition(onGPSSuccess, onGPSError, options);
+
+                    if ( device.platform === 'android' || device.platform === 'Android' )
+                    {
+                        pushNotification.unregister(successHandler, pushErrorHandler);
+                        pushNotification.register(
+                            pushSuccessHandler,
+                            pushErrorHandler, {
+                                "senderID":"replace_with_sender_id",
+                                "ecb":"onNotificationGCM"
+                            });
+                    }
+                    else
+                    {
+                        pushNotification.register(
+                            pushTokenHandler,
+                            pushErrorHandler, {
+                                "badge":"true",
+                                "sound":"true",
+                                "alert":"true",
+                                "ecb":"onNotificationAPN"
+                            });
+                    }
+
+                    if(id_persona){
+                        actualizarToken();
+                        $.mobile.changePage('#home', {transition: 'fade'});
+                    }
+                }else{
+                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.");
                 }
-                else
-                {
-                    pushNotification.register(
-                        pushTokenHandler,
-                        pushErrorHandler, {
-                            "badge":"true",
-                            "sound":"true",
-                            "alert":"true",
-                            "ecb":"onNotificationAPN"
-                        });
-                }
-                if(id_persona){
-                    actualizarToken();
-                    $.mobile.changePage('#home', {transition: 'fade'});
-                }
-                checkConnection();
             }
             
             function actualizarToken(){
@@ -306,10 +312,9 @@
                     data: { id_persona: id_persona, token: apn_token }
                 }).done(function( respuesta ) {
                     if( respuesta.validacion === 'ok' ){
-                        navigator.notification.alert('Token: '+respuesta.mensaje);
-                        $.mobile.changePage('#home', {transition: 'fade'});
+                        console.log('Token APN: '+respuesta.mensaje);
                     }else if( respuesta.validacion === 'error' ){
-                        navigator.notification.alert( respuesta.mensaje );
+                        console.log(respuesta.mensaje);
                     }
                 }).fail(function ( respuesta ){
                     navigator.notification.alert("Error al intentar conectar con el servidor para actualizar el APN token: "+urlAPNToken);
@@ -317,15 +322,15 @@
             }
             
             function successHandler (result) {
-                navigator.notification.alert('result = ' + result);
+                consle.log('result = ' + result);
             }
             
             function pushErrorHandler (error) {
-                navigator.notification.alert('error = ' + error);
+                console.log('error = ' + error);
             }
             
             function pushTokenHandler (result) {
-                //navigator.notification.alert('device token = ' + result);
+                console.log('device token = ' + result);
                 // Se actualiza el token
                 window.localStorage.setItem("apn_token", result);
             }
@@ -334,7 +339,7 @@
             function onNotificationAPN (event) {
                 if ( event.alert )
                 {
-                    navigator.notification.alert(event.alert);
+                    console.log(event.alert);
                 }
 
                 if ( event.sound )
@@ -346,6 +351,10 @@
                 if ( event.badge )
                 {
                     pushNotification.setApplicationIconBadgeNumber(successHandler, pushErrorHandler, event.badge);
+                }
+                
+                if ( event.msg1 ){
+                    console.log("Mensaje custom: "+event.msg1);
                 }
             }
             
@@ -373,8 +382,11 @@
                 states[Connection.CELL_4G]  = 'Conexión movil 4G';
                 states[Connection.NONE]     = 'Sin conexión';
                 console.log('Tipo de conexión: ' + states[networkState]);
-                if(networkState === Connection.NONE)
-                    navigator.notification.alert("Es necesario tener conexión a internet para iniciar sesión o registrarse.");
+                if(networkState === Connection.NONE){
+                    return false;
+                }else{
+                    return true;
+                }
             }
             
             function Photo() {
