@@ -175,7 +175,7 @@
         
         <div data-role="page" id="media" data-dom-cache="true" data-theme="d">
             <div data-role="header" data-position="fixed" data-theme="d">
-                <a href="#reporte" data-icon="arrow-l" data-direction="reverse" data-transition="none">Atrás</a>
+                <a href="#home" data-icon="arrow-l" data-direction="reverse" data-transition="none">Atrás</a>
                 <h1>Media</h1>
             </div>
             <div data-role="content" data-theme="d">
@@ -267,7 +267,7 @@
                 if(checkConnection()){
                 
                     // Throw an error if no update is received every 30 seconds
-                    var options = { enableHighAccuracy : true, maximumAge: 3000, timeout: 5000 };
+                    var options = { enableHighAccuracy : true, maximumAge: 5000, timeout: 5000 };
                     watchID = navigator.geolocation.watchPosition(onGPSSuccess, onGPSError, options);
 
                     if ( device.platform === 'android' || device.platform === 'Android' )
@@ -353,8 +353,10 @@
                     pushNotification.setApplicationIconBadgeNumber(successHandler, pushErrorHandler, event.badge);
                 }
                 
-                if ( event.msg1 ){
-                    console.log("Mensaje custom: "+event.msg1);
+                if ( event.tipo === 'chat' ){
+                    $('#chat').append('<p>'+event.alert+'</p>');
+                    console.log("Mensaje: "+event.alert);
+                    $.mobile.changePage('#media', {transition: 'fade'});
                 }
             }
             
@@ -418,23 +420,23 @@
                         tipo: "image/jpeg",
                         data: imageData}
                   }).done(function( respuesta ) {
-                        if( respuesta.mensaje === 'ok' ){
-                            $('#chat').append('<p><small>'+respuesta.hora+'</small> <img src="data:image/jpeg;base64,'+imageData+'" width="128" height="128"></p>');
+                        if( respuesta.resultado === 'ok' ){
+                            $('#chat').append('<p><small>'+respuesta.hora+'</small> <img src="data:image/jpeg;base64,'+imageData+'" width="96" height="96"></p>');
+                            $('#chat').append('<p style="text-align: right;">'+respuesta.mensaje+'</p>');
                             //navigator.notification.alert("Imagen enviada correctamente");
                         }else{
-                            navigator.notification.alert( respuesta.mensaje );
+                            console.log( respuesta.resultado );
                         }
                         $.mobile.loading('hide');
                   }).fail(function ( data, mensaje, error ){
-                      console.log("Error: "+error);
-                      navigator.notification.alert("Ocurrió un error al enviar la foto: "+error+"\n"+urlMedia, null, 'Error');
+                      console.log("Error: "+error+", url: "+urlMedia);
                       $.mobile.loading('hide');
                   });
             }
             
             function onPhotoError(message) {
               console.log(message);
-              navigator.notification.alert("Error al guardar la foto: "+message, null, 'Error');
+              //navigator.notification.alert("Error al guardar la foto: "+message, null, 'Error');
             }
             
             // onGPSSuccess Geolocation
@@ -607,15 +609,15 @@
                         crossDomain: "true",
                         data: { id_persona: idPersona, id_tipo: idTipo, mensaje: 'Reporte inicial' }
                     }).done(function( respuesta ) {
-                        if( respuesta.mensaje === 'ok' ){
+                        if( respuesta.resultado === 'ok' ){
                             window.localStorage.setItem("id_evento", respuesta.id_evento);
                             window.localStorage.setItem("telefono", respuesta.telefono);
-                            $('#chat').html('');
+                            $('#chat').html(respuesta.mensaje);
                             $.mobile.loading('hide');
                             $.mobile.changePage('#media', {transition: 'none'});
                         }else if( respuesta.validacion === 'error' ){
                             $.mobile.loading('hide');
-                            alert( respuesta.mensaje );
+                            console.log( respuesta.resultado );
                         }
                     }).fail(function (){
                         alert("Error al intentar conectar con el servidor.");
@@ -663,13 +665,13 @@
                             longitud: longitud}
                     }).done(function( respuesta ) {
                         $.mobile.loading('hide');
-                        if( respuesta.validacion === 'error' ){
-                            alert( respuesta.mensaje );
-                        }else{
+                        if( respuesta.validacion === 'ok' ){
                             $('#chat').append('<p><small>'+respuesta.hora+'</small> '+texto+'</p>');
+                        }else{
+                            console.log( respuesta.mensaje );
                         }
                     }).fail(function (){
-                        alert("Error al intentar conectar con el servidor.");
+                        console.log("Error al intentar conectar con el servidor.");
                     });
                     $('#texto').val('');
                 });
@@ -717,20 +719,20 @@
                         data: { email: datosEmail, password: datosPassword }
                       }).done(function( respuesta ) {
                           $('#formulario input, #formulario button').removeAttr('disabled');
-                          if( respuesta.validacion === 'ok' ){
+                          if( respuesta.resultado === 'ok' ){
                             window.localStorage.setItem("telefono", respuesta.telefono);
                             window.localStorage.setItem("id_persona", respuesta.id_persona);
                             actualizarToken();  //Se actualiza el token para las notificaciones
                             $.mobile.changePage('#home', {transition: 'fade'});
-                          }else if( respuesta.validacion === 'error' ){
-                              alert( respuesta.mensaje );
+                          }else if( respuesta.resultado === 'error' ){
+                              console.log( respuesta.mensaje );
                               $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
                               $('#ingresar i').removeClass().addClass('icon-signin'); //le agrega una animación al botón (loader)
                           }
                           $.mobile.loading('hide');
                       }).fail(function ( respuesta ){
                           $.mobile.loading('hide');
-                          alert("Error al intentar conectar con el servidor: "+archivoValidacion);
+                          console.log("Error al intentar conectar con el servidor: "+archivoValidacion);
                           $('#formulario input, #formulario button').removeAttr('disabled'); //deshabilita el formulario
                           $.mobile.changePage('#ws', {transition: 'slideup'});
                           
@@ -772,7 +774,7 @@
                     // asking us to load a page by URL.
                     if ( typeof data.toPage === "string" ) {
 
-                            console.log(data.toPage);
+                            console.log("Cambio a página: "+data.toPage);
                     }
             });
         </script>
